@@ -119,25 +119,25 @@ function App() {
           <span className="nav-label">Home</span>
         </button>
         <button 
-          className={`nav-item ${activeTab === 'news' ? 'active' : ''}`}
-          onClick={() => setActiveTab('news')}
+          className={`nav-item ${activeTab === 'ara' ? 'active' : ''}`}
+          onClick={() => setActiveTab('ara')}
         >
-          <span className="nav-icon">📰</span>
-          <span className="nav-label">News</span>
+          <span className="nav-icon">🤖</span>
+          <span className="nav-label">Ara</span>
         </button>
         <button 
-          className={`nav-item ${activeTab === 'market' ? 'active' : ''}`}
-          onClick={() => setActiveTab('market')}
+          className={`nav-item ${activeTab === 'contest' ? 'active' : ''}`}
+          onClick={() => setActiveTab('contest')}
         >
-          <span className="nav-icon">📈</span>
-          <span className="nav-label">Market</span>
+          <span className="nav-icon">🏆</span>
+          <span className="nav-label">Contest</span>
         </button>
         <button 
-          className={`nav-item ${activeTab === 'community' ? 'active' : ''}`}
-          onClick={() => setActiveTab('community')}
+          className={`nav-item ${activeTab === 'watch' ? 'active' : ''}`}
+          onClick={() => setActiveTab('watch')}
         >
-          <span className="nav-icon">👥</span>
-          <span className="nav-label">Community</span>
+          <span className="nav-icon">⭐</span>
+          <span className="nav-label">Watch</span>
         </button>
       </nav>
     </div>
