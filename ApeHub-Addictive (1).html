@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="description" content="Ape Hub - Track your favorite stocks with gamification">
+    <meta name="theme-color" content="#000000">
+    <title>Ape Hub - Stock Tracker</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --safe-area-inset-top: env(safe-area-inset-top, 0px);
+            --safe-area-inset-right: env(safe-area-inset-right, 0px);
+            --safe-area-inset-bottom: env(safe-area-inset-bottom, 0px);
+            --safe-area-inset-left: env(safe-area-inset-left, 0px);
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: #fff;
+            min-height: 100vh;
+            padding-top: var(--safe-area-inset-top);
+            padding-bottom: var(--safe-area-inset-bottom);
+            padding-left: var(--safe-area-inset-left);
+            padding-right: var(--safe-area-inset-right);
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px 0;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .xp-bar-container {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 15px;
+            margin-bottom: 20px;
+            backdrop-filter: blur(10px);
+        }
+
+        .xp-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .level {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #ffd700;
+        }
+
+        .xp-text {
+            font-size: 0.9em;
+            color: #aaa;
+        }
+
+        .xp-bar {
+            width: 100%;
+            height: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .xp-progress {
+            height: 100%;
+            background: linear-gradient(90deg, #4ecdc4, #44a8ff);
+            transition: width 0.5s ease;
+            border-radius: 10px;
+        }
+
+        .search-container {
+            margin-bottom: 20px;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 15px;
+            font-size: 1em;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            outline: none;
+            transition: all 0.3s ease;
+            min-height: 44px;
+        }
+
+        .search-input:focus {
+            border-color: #4ecdc4;
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .holdings-container {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .holdings-title {
+            font-size: 1.5em;
+            margin-bottom: 15px;
+            color: #4ecdc4;
+        }
+
+        .holding-item {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: transform 0.2s ease;
+        }
+
+        .holding-item:active {
+            transform: scale(0.98);
+        }
+
+        .holding-symbol {
+            font-size: 1.2em;
+            font-weight: bold;
+        }
+
+        .holding-price {
+            font-size: 1.1em;
+            color: #4ecdc4;
+        }
+
+        .holding-change {
+            font-size: 0.9em;
+            padding: 5px 10px;
+            border-radius: 5px;
+        }
+
+        .positive {
+            background: rgba(76, 175, 80, 0.3);
+            color: #4caf50;
+        }
+
+        .negative {
+            background: rgba(244, 67, 54, 0.3);
+            color: #f44336;
+        }
+
+        .add-button {
+            width: 100%;
+            padding: 15px;
+            font-size: 1.1em;
+            background: linear-gradient(45deg, #4ecdc4, #44a8ff);
+            border: none;
+            border-radius: 10px;
+            color: #fff;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+            min-height: 44px;
+        }
+
+        .add-button:active {
+            transform: scale(0.95);
+        }
+
+        .remove-button {
+            background: rgba(244, 67, 54, 0.5);
+            border: none;
+            border-radius: 5px;
+            color: #fff;
+            padding: 8px 15px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            min-height: 44px;
+            min-width: 44px;
+        }
+
+        .remove-button:active {
+            transform: scale(0.95);
+            background: rgba(244, 67, 54, 0.7);
+        }
+
+        .confetti {
+            position: fixed;
+            width: 10px;
+            height: 10px;
+            background: #ffd700;
+            position: absolute;
+            animation: confetti-fall 3s linear forwards;
+        }
+
+        @keyframes confetti-fall {
+            to {
+                transform: translateY(100vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        .notification {
+            position: fixed;
+            top: calc(20px + var(--safe-area-inset-top));
+            right: 20px;
+            background: rgba(76, 205, 80, 0.9);
+            color: white;
+            padding: 15px 20px;
+            border-radius: 10px;
+            font-weight: bold;
+            animation: slideIn 0.3s ease, slideOut 0.3s ease 2.7s forwards;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideOut {
+            from {
+                transform: translateX(0);
+                opacity: 1;
+            }
+            to {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+        }
+
+        .loading {
+            text-align: center;
+            color: #aaa;
+            padding: 20px;
+        }
+
+        .stats-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 2em;
+            font-weight: bold;
+            color: #4ecdc4;
+        }
+
+        .stat-label {
+            font-size: 0.9em;
+            color: #aaa;
+            margin-top: 5px;
+        }
+
+        /* Pull to refresh indicator */
+        .pull-to-refresh {
+            position: fixed;
+            top: var(--safe-area-inset-top);
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(78, 205, 196, 0.9);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+        }
+
+        .pull-to-refresh.visible {
+            opacity: 1;
+        }
+    </style>
+</head>
+<body>
+    <div class="pull-to-refresh" id="pullToRefresh">↓ Pull to refresh</div>
+
+    <div class="container">
+        <div class="header">
+            <h1>🦍 Ape Hub</h1>
+            <p>Track stocks, gain XP, level up!</p>
+        </div>
+
+        <div class="xp-bar-container">
+            <div class="xp-info">
+                <div class="level">Level <span id="level">1</span></div>
+                <div class="xp-text"><span id="currentXP">0</span> / <span id="nextLevelXP">100</span> XP</div>
+            </div>
+            <div class="xp-bar">
+                <div class="xp-progress" id="xpProgress" style="width: 0%"></div>
+            </div>
+        </div>
+
+        <div class="stats-container">
+            <div class="stat-card">
+                <div class="stat-value" id="totalHoldings">0</div>
+                <div class="stat-label">Holdings</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="totalXP">0</div>
+                <div class="stat-label">Total XP</div>
+            </div>
+        </div>
+
+        <div class="search-container">
+            <input 
+                type="text" 
+                class="search-input" 
+                id="symbolInput" 
+                placeholder="Enter stock symbol (e.g., AAPL, TSLA, GME)"
+                autocomplete="off"
+            >
+            <button class="add-button" id="addButton">Add to Holdings</button>
+        </div>
+
+        <div class="holdings-container">
+            <h2 class="holdings-title">My Holdings</h2>
+            <div id="holdingsList"></div>
+        </div>
+    </div>
+
+    <script>
+        // Game state
+        let gameState = {
+            xp: 0,
+            level: 1,
+            holdings: []
+        };
+
+        // Finnhub API configuration
+        const FINNHUB_API_KEY = 'demo'; // Replace with actual API key
+        const FINNHUB_BASE_URL = 'https://finnhub.io/api/v1';
+
+        // Initialize app
+        function initApp() {
+            loadGameState();
+            updateUI();
+            loadHoldingsPrices();
+            
+            // Auto-refresh prices every 60 seconds
+            setInterval(loadHoldingsPrices, 60000);
+        }
+
+        // Load game state from localStorage
+        function loadGameState() {
+            const saved = localStorage.getItem('apeHubGameState');
+            if (saved) {
+                gameState = JSON.parse(saved);
+            }
+        }
+
+        // Save game state to localStorage
+        function saveGameState() {
+            localStorage.setItem('apeHubGameState', JSON.stringify(gameState));
+        }
+
+        // Update UI elements
+        function updateUI() {
+            const xpForNextLevel = gameState.level * 100;
+            const progress = (gameState.xp % 100) / 100 * 100;
+            
+            document.getElementById('level').textContent = gameState.level;
+            document.getElementById('currentXP').textContent = gameState.xp % 100;
+            document.getElementById('nextLevelXP').textContent = 100;
+            document.getElementById('xpProgress').style.width = progress + '%';
+            document.getElementById('totalXP').textContent = gameState.xp;
+            document.getElementById('totalHoldings').textContent = gameState.holdings.length;
+        }
+
+        // Gain XP
+        function gainXP(amount) {
+            gameState.xp += amount;
+            
+            // Check for level up
+            const newLevel = Math.floor(gameState.xp / 100) + 1;
+            if (newLevel > gameState.level) {
+                gameState.level = newLevel;
+                showNotification('🎉 Level Up! You are now level ' + gameState.level);
+                createConfetti();
+            }
+            
+            saveGameState();
+            updateUI();
+        }
+
+        // Create confetti effect
+        function createConfetti() {
+            const colors = ['#ffd700', '#ff6b6b', '#4ecdc4', '#44a8ff', '#95e1d3'];
+            for (let i = 0; i < 50; i++) {
+                setTimeout(() => {
+                    const confetti = document.createElement('div');
+                    confetti.className = 'confetti';
+                    confetti.style.left = Math.random() * window.innerWidth + 'px';
+                    confetti.style.top = '-10px';
+                    confetti.style.background = colors[Math.floor(Math.random() * colors.length)];
+                    confetti.style.transform = 'rotate(' + Math.random() * 360 + 'deg)';
+                    document.body.appendChild(confetti);
+                    
+                    setTimeout(() => confetti.remove(), 3000);
+                }, i * 30);
+            }
+        }
+
+        // Show notification
+        function showNotification(message) {
+            const notification = document.createElement('div');
+            notification.className = 'notification';
+            notification.textContent = message;
+            document.body.appendChild(notification);
+            
+            setTimeout(() => notification.remove(), 3000);
+        }
+
+        // Fetch stock price from Finnhub
+        async function fetchStockPrice(symbol) {
+            try {
+                const response = await fetch(
+                    `${FINNHUB_BASE_URL}/quote?symbol=${symbol}&token=${FINNHUB_API_KEY}`
+                );
+                const data = await response.json();
+                
+                if (data.c && data.c > 0) {
+                    return {
+                        price: data.c,
+                        change: data.d,
+                        changePercent: data.dp
+                    };
+                }
+                return null;
+            } catch (error) {
+                console.error('Error fetching stock price:', error);
+                return null;
+            }
+        }
+
+        // Add holding
+        async function addHolding() {
+            const symbolInput = document.getElementById('symbolInput');
+            const symbol = symbolInput.value.trim().toUpperCase();
+            
+            if (!symbol) {
+                showNotification('⚠️ Please enter a stock symbol');
+                return;
+            }
+            
+            if (gameState.holdings.some(h => h.symbol === symbol)) {
+                showNotification('⚠️ Already tracking ' + symbol);
+                return;
+            }
+            
+            showNotification('⏳ Fetching ' + symbol + '...');
+            
+            const priceData = await fetchStockPrice(symbol);
+            
+            if (priceData) {
+                gameState.holdings.push({
+                    symbol: symbol,
+                    ...priceData,
+                    addedAt: Date.now()
+                });
+                
+                saveGameState();
+                renderHoldings();
+                gainXP(10);
+                showNotification('✅ Added ' + symbol + ' to holdings! +10 XP');
+                symbolInput.value = '';
+            } else {
+                showNotification('❌ Could not find stock ' + symbol);
+            }
+        }
+
+        // Remove holding
+        function removeHolding(symbol) {
+            gameState.holdings = gameState.holdings.filter(h => h.symbol !== symbol);
+            saveGameState();
+            renderHoldings();
+            showNotification('🗑️ Removed ' + symbol);
+            updateUI();
+        }
+
+        // Load prices for all holdings
+        async function loadHoldingsPrices() {
+            if (gameState.holdings.length === 0) return;
+            
+            for (let holding of gameState.holdings) {
+                const priceData = await fetchStockPrice(holding.symbol);
+                if (priceData) {
+                    Object.assign(holding, priceData);
+                }
+            }
+            
+            saveGameState();
+            renderHoldings();
+        }
+
+        // Render holdings list
+        function renderHoldings() {
+            const holdingsList = document.getElementById('holdingsList');
+            
+            if (gameState.holdings.length === 0) {
+                holdingsList.innerHTML = '<div class="loading">No holdings yet. Add your first stock above! 🚀</div>';
+                return;
+            }
+            
+            holdingsList.innerHTML = gameState.holdings.map(holding => {
+                const changeClass = holding.change >= 0 ? 'positive' : 'negative';
+                const changeSymbol = holding.change >= 0 ? '+' : '';
+                
+                return `
+                    <div class="holding-item">
+                        <div>
+                            <div class="holding-symbol">${holding.symbol}</div>
+                            <div class="holding-price">$${holding.price.toFixed(2)}</div>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <div class="holding-change ${changeClass}">
+                                ${changeSymbol}${holding.change.toFixed(2)} (${changeSymbol}${holding.changePercent.toFixed(2)}%)
+                            </div>
+                            <button class="remove-button" onclick="removeHolding('${holding.symbol}')">✕</button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Pull to refresh functionality
+        let touchStartY = 0;
+        let touchCurrentY = 0;
+        let isPulling = false;
+
+        document.addEventListener('touchstart', (e) => {
+            if (window.scrollY === 0) {
+                touchStartY = e.touches[0].clientY;
+                isPulling = true;
+            }
+        });
+
+        document.addEventListener('touchmove', (e) => {
+            if (!isPulling) return;
+            
+            touchCurrentY = e.touches[0].clientY;
+            const pullDistance = touchCurrentY - touchStartY;
+            
+            if (pullDistance > 80) {
+                document.getElementById('pullToRefresh').classList.add('visible');
+            } else {
+                document.getElementById('pullToRefresh').classList.remove('visible');
+            }
+        });
+
+        document.addEventListener('touchend', (e) => {
+            if (!isPulling) return;
+            
+            const pullDistance = touchCurrentY - touchStartY;
+            
+            if (pullDistance > 80) {
+                loadHoldingsPrices();
+                showNotification('🔄 Refreshing prices...');
+            }
+            
+            document.getElementById('pullToRefresh').classList.remove('visible');
+            isPulling = false;
+        });
+
+        // Event listeners
+        document.getElementById('addButton').addEventListener('click', addHolding);
+        document.getElementById('symbolInput').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                addHolding();
+            }
+        });
+
+        // Initialize app when DOM is ready
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initApp);
+        } else {
+            initApp();
+        }
+    </script>
+</body>
+</html>
