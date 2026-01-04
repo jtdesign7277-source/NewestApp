@@ -1,16 +1,64 @@
-# React + Vite
+# Stock Portfolio - Robinhood Style
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A mobile-ready stock and finance application with a Robinhood-inspired design and feel.
 
-Currently, two official plugins are available:
+## Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- 📱 **Mobile-First Design**: Optimized for mobile devices with touch-friendly interactions
+- 📊 **Portfolio Overview**: View your total portfolio value with daily changes
+- 📈 **Mini Chart**: Visual representation of portfolio performance
+- 💼 **Stock Holdings**: Track your stock positions with real-time prices and changes
+- 👁️ **Watchlist**: Monitor stocks you're interested in
+- 🎨 **Robinhood-Inspired UI**: Clean, modern dark theme with signature green accents
+- 🔔 **Sticky Navigation**: Bottom navigation bar for easy access on mobile
 
-## React Compiler
+## Design Highlights
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- **Dark Theme**: Black background (#000000) for OLED displays
+- **Color Scheme**: 
+  - Green (#00c805) for positive changes
+  - Red (#ff3b30) for negative changes
+  - Subtle borders and cards for clean separation
+- **Typography**: System fonts for native feel on all devices
+- **Responsive**: Adapts to all screen sizes from mobile to desktop
 
-## Expanding the ESLint configuration
+## Getting Started
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+### Install Dependencies
+```bash
+npm install
+```
+
+### Development Server
+```bash
+npm run dev
+```
+
+### Build for Production
+```bash
+npm run build
+```
+
+### Lint Code
+```bash
+npm run lint
+```
+
+## Tech Stack
+
+- **React 19** - Modern React with latest features
+- **Vite** - Fast build tool and dev server
+- **CSS3** - Custom styling with CSS variables
+- **ESLint** - Code quality and consistency
+
+## Mobile Optimization
+
+- Touch-optimized buttons and interactive elements
+- Viewport meta tags for proper mobile rendering
+- Smooth scrolling and animations
+- Bottom navigation for thumb-friendly access
+- Fixed positioning for key UI elements
+
+## License
+
+MIT
