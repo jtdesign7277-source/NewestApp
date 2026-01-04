@@ -115,29 +115,29 @@ function App() {
           className={`nav-item ${activeTab === 'home' ? 'active' : ''}`}
           onClick={() => setActiveTab('home')}
         >
-          <span className="nav-icon">📊</span>
-          <span className="nav-label">Investing</span>
+          <span className="nav-icon">🏠</span>
+          <span className="nav-label">Home</span>
         </button>
         <button 
-          className={`nav-item ${activeTab === 'spending' ? 'active' : ''}`}
-          onClick={() => setActiveTab('spending')}
+          className={`nav-item ${activeTab === 'news' ? 'active' : ''}`}
+          onClick={() => setActiveTab('news')}
         >
-          <span className="nav-icon">💳</span>
-          <span className="nav-label">Spending</span>
+          <span className="nav-icon">📰</span>
+          <span className="nav-label">News</span>
         </button>
         <button 
-          className={`nav-item ${activeTab === 'retirement' ? 'active' : ''}`}
-          onClick={() => setActiveTab('retirement')}
+          className={`nav-item ${activeTab === 'market' ? 'active' : ''}`}
+          onClick={() => setActiveTab('market')}
         >
-          <span className="nav-icon">🏦</span>
-          <span className="nav-label">Retirement</span>
+          <span className="nav-icon">📈</span>
+          <span className="nav-label">Market</span>
         </button>
         <button 
-          className={`nav-item ${activeTab === 'account' ? 'active' : ''}`}
-          onClick={() => setActiveTab('account')}
+          className={`nav-item ${activeTab === 'community' ? 'active' : ''}`}
+          onClick={() => setActiveTab('community')}
         >
-          <span className="nav-icon">👤</span>
-          <span className="nav-label">Account</span>
+          <span className="nav-icon">👥</span>
+          <span className="nav-label">Community</span>
         </button>
       </nav>
     </div>
