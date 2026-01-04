@@ -469,7 +469,10 @@
         };
 
         // Finnhub API configuration
-        const FINNHUB_API_KEY = 'demo'; // Replace with actual API key
+        // NOTE: Using demo API key for testing purposes only.
+        // For production deployment, replace with your own API key from https://finnhub.io
+        // or use environment variables to avoid hardcoding sensitive data.
+        const FINNHUB_API_KEY = 'demo';
         const FINNHUB_BASE_URL = 'https://finnhub.io/api/v1';
 
         // Storage helper functions using Capacitor Preferences
@@ -495,16 +498,19 @@
             if (window.Capacitor && window.Capacitor.isNativePlatform()) {
                 try {
                     if (type === 'success') {
+                        // Use notification haptic for success events
                         await window.CapacitorPlugins.Haptics.notification({ 
-                            type: window.CapacitorPlugins.Haptics.NotificationType || 'success' 
+                            type: 'SUCCESS'
                         });
                     } else if (type === 'heavy') {
+                        // Use heavy impact for major events
                         await window.CapacitorPlugins.Haptics.impact({ 
-                            style: window.CapacitorPlugins.Haptics.ImpactStyle?.Heavy || 'heavy' 
+                            style: 'HEAVY'
                         });
                     } else {
+                        // Use light impact for general feedback
                         await window.CapacitorPlugins.Haptics.impact({ 
-                            style: window.CapacitorPlugins.Haptics.ImpactStyle?.Light || 'light' 
+                            style: 'LIGHT'
                         });
                     }
                 } catch (error) {
