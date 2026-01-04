@@ -46,6 +46,8 @@ Before you begin, ensure you have the following installed:
    ```bash
    npm install
    ```
+   
+   **Note**: You may see moderate severity warnings related to esbuild/vite. These are development-only dependencies and do not affect the production app. The vulnerabilities relate to the development server and are not present in the compiled iOS/Android apps.
 
 3. **Configure Finnhub API Key** (Optional - uses demo key by default)
    
