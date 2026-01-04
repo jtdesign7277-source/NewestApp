@@ -1,0 +1,50 @@
+{
+  "name": "apehub-mobile",
+  "version": "1.0.0",
+  "description": "Ape Hub - Mobile app for tracking stocks with gamification",
+  "main": "index.js",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "ionic:build": "npm run build",
+    "ionic:serve": "npm run dev",
+    "sync": "npx cap sync",
+    "sync:ios": "npx cap sync ios",
+    "sync:android": "npx cap sync android",
+    "open:ios": "npx cap open ios",
+    "open:android": "npx cap open android",
+    "add:ios": "npx cap add ios",
+    "add:android": "npx cap add android",
+    "copy": "npx cap copy",
+    "update": "npx cap update"
+  },
+  "keywords": [
+    "apehub",
+    "stocks",
+    "mobile",
+    "capacitor",
+    "ios",
+    "android"
+  ],
+  "author": "Ape Hub Team",
+  "license": "MIT",
+  "dependencies": {
+    "@capacitor/app": "^6.0.0",
+    "@capacitor/core": "^6.0.0",
+    "@capacitor/haptics": "^6.0.0",
+    "@capacitor/keyboard": "^6.0.0",
+    "@capacitor/local-notifications": "^6.0.0",
+    "@capacitor/push-notifications": "^6.0.0",
+    "@capacitor/splash-screen": "^6.0.0",
+    "@capacitor/status-bar": "^6.0.0",
+    "@capacitor/preferences": "^6.0.0"
+  },
+  "devDependencies": {
+    "@capacitor/android": "^6.0.0",
+    "@capacitor/cli": "^6.0.0",
+    "@capacitor/ios": "^6.0.0",
+    "typescript": "^5.3.3",
+    "vite": "^5.0.0"
+  }
+}
