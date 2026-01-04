@@ -22,3 +22,66 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+# Capacitor
+ios/App/Pods
+ios/App/build
+ios/App/App.xcworkspace/xcuserdata
+ios/App/App.xcodeproj/xcuserdata
+*.xcuserstate
+android/.gradle
+android/app/build
+android/build
+android/.idea
+android/local.properties
+android/*.iml
+android/.DS_Store
+.gradle
+
+# Node
+node_modules
+npm-debug.log
+yarn-error.log
+
+# Build outputs
+dist
+www/build
+build
+
+# IDE
+.vscode
+.idea
+*.swp
+*.swo
+*.swn
+*.bak
+*~
+.DS_Store
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# Logs
+logs
+*.log
+
+# OS
+Thumbs.db
+Desktop.ini
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+
+# Keys and certificates
+*.keystore
+*.jks
+key.properties
+*.p12
+*.mobileprovision
+
+# Generated assets (uncomment if using asset generator)
+# resources/android
+# resources/ios
