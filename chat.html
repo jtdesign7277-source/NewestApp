@@ -1,0 +1,1134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Chat | ApeHub</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: #0a0a0f;
+      min-height: 100vh;
+      font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Instrument Sans', sans-serif;
+      color: #fff;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .container {
+      max-width: 500px;
+      margin: 0 auto;
+      padding: 0;
+      padding-bottom: calc(100px + env(safe-area-inset-bottom));
+    }
+
+    /* Top Bar */
+    .top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 24px;
+      padding-top: calc(12px + env(safe-area-inset-top));
+    }
+
+    .page-title {
+      font-size: 18px;
+      font-weight: 600;
+      color: #fff;
+    }
+
+    .page-title span {
+      color: #a855f7;
+    }
+
+    .online-badge {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      color: rgba(255, 255, 255, 0.5);
+    }
+
+    .online-dot {
+      width: 6px;
+      height: 6px;
+      background: #00d775;
+      border-radius: 50%;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+
+    /* Feed Container */
+    .feed-container {
+      padding: 0 16px;
+    }
+
+    /* Post Card */
+    .post-card {
+      padding: 16px 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    }
+
+    .post-card.new-post {
+      animation: fadeIn 0.3s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .post-header {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+    }
+
+    .post-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #a855f7 0%, #6366f1 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      font-weight: 700;
+      color: #fff;
+      flex-shrink: 0;
+    }
+
+    .post-avatar.asshole { background: linear-gradient(135deg, #ff4757 0%, #c0392b 100%); }
+    .post-avatar.gambler { background: linear-gradient(135deg, #f7931a 0%, #e67e22 100%); }
+    .post-avatar.woman { background: linear-gradient(135deg, #ff6b9d 0%, #c44569 100%); }
+    .post-avatar.cocky { background: linear-gradient(135deg, #00d775 0%, #27ae60 100%); }
+    .post-avatar.ape { background: linear-gradient(135deg, #3b82f6 0%, #2980b9 100%); }
+
+    .post-avatar img {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+
+    .post-content {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .post-meta {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 6px;
+    }
+
+    .post-username {
+      font-size: 14px;
+      font-weight: 600;
+      color: #fff;
+    }
+
+    .post-handle {
+      font-size: 13px;
+      color: rgba(255, 255, 255, 0.4);
+    }
+
+    .post-dot {
+      width: 3px;
+      height: 3px;
+      background: rgba(255, 255, 255, 0.3);
+      border-radius: 50%;
+    }
+
+    .post-time {
+      font-size: 13px;
+      color: rgba(255, 255, 255, 0.4);
+    }
+
+    .post-text {
+      font-size: 15px;
+      line-height: 1.5;
+      color: rgba(255, 255, 255, 0.9);
+      margin-bottom: 12px;
+      word-wrap: break-word;
+    }
+
+    .post-text .ticker {
+      color: #a855f7;
+      font-weight: 600;
+    }
+
+    .post-text .hashtag {
+      color: #3b82f6;
+    }
+
+    /* Post Actions */
+    .post-actions {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+    }
+
+    .action-btn {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: none;
+      border: none;
+      color: rgba(255, 255, 255, 0.4);
+      font-size: 13px;
+      cursor: pointer;
+      padding: 8px 0;
+      transition: color 0.15s, transform 0.1s;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .action-btn svg {
+      width: 18px;
+      height: 18px;
+      transition: transform 0.15s;
+    }
+
+    .action-btn:active {
+      transform: scale(0.95);
+    }
+
+    .action-btn.reply:hover,
+    .action-btn.reply:active {
+      color: #3b82f6;
+    }
+
+    .action-btn.like:hover,
+    .action-btn.like:active {
+      color: #00d775;
+    }
+
+    .action-btn.like.active {
+      color: #00d775;
+    }
+
+    .action-btn.dislike:hover,
+    .action-btn.dislike:active {
+      color: #ff4757;
+    }
+
+    .action-btn.dislike.active {
+      color: #ff4757;
+    }
+
+    /* Reply Section */
+    .reply-section {
+      display: none;
+      margin-top: 12px;
+    }
+
+    .reply-section.open {
+      display: block;
+    }
+
+    .reply-input-container {
+      display: flex;
+      gap: 8px;
+      align-items: flex-end;
+    }
+
+    .reply-input {
+      flex: 1;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 20px;
+      padding: 10px 16px;
+      font-size: 14px;
+      color: #fff;
+      outline: none;
+      resize: none;
+      font-family: inherit;
+    }
+
+    .reply-input:focus {
+      border-color: #a855f7;
+    }
+
+    .reply-send-btn {
+      background: #a855f7;
+      border: none;
+      border-radius: 50%;
+      width: 36px;
+      height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+
+    .reply-send-btn svg {
+      width: 16px;
+      height: 16px;
+      color: #fff;
+    }
+
+    /* Replies */
+    .replies-container {
+      margin-top: 12px;
+    }
+
+    .reply-card {
+      display: flex;
+      gap: 10px;
+      padding: 10px 0;
+      border-top: 1px solid rgba(255, 255, 255, 0.04);
+    }
+
+    .reply-avatar {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      font-weight: 600;
+      color: #fff;
+      flex-shrink: 0;
+    }
+
+    .reply-content {
+      flex: 1;
+    }
+
+    .reply-meta {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 4px;
+    }
+
+    .reply-username {
+      font-size: 13px;
+      font-weight: 600;
+      color: #fff;
+    }
+
+    .reply-time {
+      font-size: 12px;
+      color: rgba(255, 255, 255, 0.3);
+    }
+
+    .reply-text {
+      font-size: 14px;
+      color: rgba(255, 255, 255, 0.8);
+      line-height: 1.4;
+    }
+
+    /* Floating Action Button */
+    .fab {
+      position: fixed;
+      bottom: calc(90px + env(safe-area-inset-bottom));
+      right: 24px;
+      width: 56px;
+      height: 56px;
+      background: linear-gradient(135deg, #a855f7 0%, #8b5cf6 100%);
+      border: none;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 4px 20px rgba(168, 85, 247, 0.4);
+      transition: all 0.3s;
+      z-index: 100;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .fab:hover {
+      transform: scale(1.05);
+    }
+
+    .fab:active {
+      transform: scale(0.95);
+    }
+
+    .fab svg {
+      width: 24px;
+      height: 24px;
+      color: #fff;
+      transition: transform 0.3s;
+    }
+
+    .fab.open svg {
+      transform: rotate(45deg);
+    }
+
+    /* Compose Modal */
+    .compose-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.8);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.3s;
+      z-index: 200;
+    }
+
+    .compose-overlay.open {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .compose-modal {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      max-width: 500px;
+      margin: 0 auto;
+      background: #1a1a24;
+      border-radius: 24px 24px 0 0;
+      padding: 20px;
+      padding-bottom: calc(20px + env(safe-area-inset-bottom));
+      transform: translateY(100%);
+      transition: transform 0.3s ease;
+      z-index: 201;
+    }
+
+    .compose-modal.open {
+      transform: translateY(0);
+    }
+
+    .compose-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+
+    .compose-cancel {
+      background: none;
+      border: none;
+      color: rgba(255, 255, 255, 0.5);
+      font-size: 15px;
+      cursor: pointer;
+      padding: 8px;
+    }
+
+    .compose-submit {
+      background: #a855f7;
+      border: none;
+      border-radius: 20px;
+      padding: 8px 20px;
+      font-size: 14px;
+      font-weight: 600;
+      color: #fff;
+      cursor: pointer;
+      transition: opacity 0.2s;
+    }
+
+    .compose-submit:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .compose-body {
+      display: flex;
+      gap: 12px;
+    }
+
+    .compose-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #a855f7 0%, #6366f1 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      font-weight: 700;
+      color: #fff;
+      flex-shrink: 0;
+    }
+
+    .compose-input {
+      flex: 1;
+      background: transparent;
+      border: none;
+      font-size: 16px;
+      color: #fff;
+      outline: none;
+      resize: none;
+      min-height: 100px;
+      font-family: inherit;
+      line-height: 1.5;
+    }
+
+    .compose-input::placeholder {
+      color: rgba(255, 255, 255, 0.3);
+    }
+
+    .char-count {
+      text-align: right;
+      font-size: 12px;
+      color: rgba(255, 255, 255, 0.3);
+      margin-top: 12px;
+    }
+
+    .char-count.warning {
+      color: #f59e0b;
+    }
+
+    .char-count.danger {
+      color: #ff4757;
+    }
+
+    /* Bottom Nav */
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: #0a0a0f;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      display: flex;
+      justify-content: space-around;
+      padding: 12px 0 28px;
+      max-width: 500px;
+      margin: 0 auto;
+      z-index: 50;
+    }
+
+    .bottom-nav {
+      padding-bottom: calc(12px + env(safe-area-inset-bottom));
+    }
+
+    .nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      color: #666;
+      text-decoration: none;
+      font-size: 11px;
+      transition: color 0.2s;
+    }
+
+    .nav-item.active {
+      color: #a855f7;
+    }
+
+    .nav-item svg {
+      width: 24px;
+      height: 24px;
+    }
+
+    /* Empty State */
+    .empty-state {
+      text-align: center;
+      padding: 60px 24px;
+      color: rgba(255, 255, 255, 0.4);
+    }
+
+    .empty-state svg {
+      width: 64px;
+      height: 64px;
+      margin-bottom: 16px;
+      opacity: 0.3;
+    }
+
+    .empty-state h3 {
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 8px;
+      color: rgba(255, 255, 255, 0.6);
+    }
+
+    .empty-state p {
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Top Bar -->
+    <div class="top-bar">
+      <h1 class="page-title">Ape<span>Chat</span></h1>
+      <div class="online-badge">
+        <div class="online-dot"></div>
+        <span id="online-count">187 online</span>
+      </div>
+    </div>
+
+    <!-- Feed -->
+    <div class="feed-container" id="feed">
+      <!-- Posts will be dynamically inserted here -->
+    </div>
+  </div>
+
+  <!-- Floating Action Button -->
+  <button class="fab" id="fab" onclick="toggleCompose()">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <line x1="12" y1="5" x2="12" y2="19"></line>
+      <line x1="5" y1="12" x2="19" y2="12"></line>
+    </svg>
+  </button>
+
+  <!-- Compose Modal -->
+  <div class="compose-overlay" id="compose-overlay" onclick="toggleCompose()"></div>
+  <div class="compose-modal" id="compose-modal">
+    <div class="compose-header">
+      <button class="compose-cancel" onclick="toggleCompose()">Cancel</button>
+      <button class="compose-submit" id="compose-submit" onclick="submitPost()" disabled>Post</button>
+    </div>
+    <div class="compose-body">
+      <div class="compose-avatar">J</div>
+      <textarea class="compose-input" id="compose-input" placeholder="What's happening in the market?" maxlength="280" oninput="updateCharCount()"></textarea>
+    </div>
+    <div class="char-count" id="char-count">0 / 280</div>
+  </div>
+
+  <!-- Bottom Nav -->
+  <nav class="bottom-nav">
+    <a href="dashboard.html" class="nav-item">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+        <polyline points="9 22 9 12 15 12 15 22"/>
+      </svg>
+      <span>Home</span>
+    </a>
+    <a href="news.html" class="nav-item">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M12 2a4 4 0 0 1 4 4v1h2a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2h2V6a4 4 0 0 1 4-4z"/>
+        <circle cx="12" cy="13" r="3"/>
+        <path d="M12 16v2"/>
+      </svg>
+      <span>AI News</span>
+    </a>
+    <a href="markets.html" class="nav-item">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+      </svg>
+      <span>Markets</span>
+    </a>
+    <a href="chat.html" class="nav-item active">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+      </svg>
+      <span>Chat</span>
+    </a>
+  </nav>
+
+  <script>
+    // Max 222 AI community members
+    const MAX_COMMUNITY_SIZE = 222;
+
+    // Current user (real user)
+    const currentUser = {
+      name: 'JT',
+      handle: '@jtdesign72',
+      avatar: 'J',
+      type: 'normal'
+    };
+
+    // Persona types with percentages
+    // 60% normal, 5% asshole, 10% gambler, 5% woman, 10% cocky winner, 10% retail ape
+    const PERSONA_TYPES = {
+      normal: { weight: 60, names: ['Mike', 'Dave', 'Chris', 'Ryan', 'Josh', 'Matt', 'Nick', 'Tom', 'Jake', 'Ben', 'Sam', 'Dan', 'Joe', 'Steve', 'Brian', 'Kevin', 'Mark', 'Paul', 'Tim', 'Eric', 'Jason', 'Adam', 'Alex', 'Tyler', 'Luke'], handles: ['mike', 'trades', 'investor', 'stocks23', 'charts', 'alpha', 'market', 'tech', 'growth', 'value', 'longterm', 'swing', 'daytrader'] },
+      asshole: { weight: 5, names: ['Derek', 'Kyle', 'Blake', 'Chase', 'Hunter', 'Marcus', 'Troy'], handles: ['realderek', 'kylehere', 'theblake', 'chasem', 'hunterx', 'marc', 'troyt'] },
+      gambler: { weight: 10, names: ['Pete', 'Tony', 'Vinny', 'Jay', 'Ricky', 'Eddie', 'Frank', 'Lou'], handles: ['pete_trades', 'tonyoptions', 'vinny', 'jayplays', 'rickyt', 'eddie', 'frankie', 'lou_'] },
+      woman: { weight: 5, names: ['Sarah', 'Emma', 'Olivia', 'Ava', 'Mia', 'Sophia', 'Chloe', 'Rachel', 'Lauren', 'Ashley', 'Jessica', 'Amanda'], handles: ['sarahk', 'emma_inv', 'livfinance', 'avawm', 'mia', 'soph', 'chloe', 'rach', 'laurenm', 'ash', 'jess', 'amanda'] },
+      cocky: { weight: 10, names: ['Marcus', 'Jordan', 'Trey', 'Damon', 'Vince', 'Grant', 'Cole', 'Blake'], handles: ['marcus_w', 'jord', 'treym', 'damon', 'vince', 'grantm', 'cole_', 'blake'] },
+      ape: { weight: 10, names: ['Kyle', 'Brandon', 'Zack', 'Connor', 'Dylan', 'Austin', 'Trevor', 'Cody'], handles: ['kyle_gme', 'brandon', 'zackk', 'connor', 'dylan', 'austin', 'trev', 'cody'] }
+    };
+
+    // Post templates by persona
+    const POST_TEMPLATES = {
+      normal: [
+        "$NVDA looking strong today. Added more shares",
+        "Anyone else watching $TSLA? Interesting price action",
+        "Fed meeting next week could be a catalyst",
+        "Just hit my profit target on $AAPL taking some off the table",
+        "$MSFT earnings coming up. Expecting beat",
+        "Market seems overbought short term being cautious",
+        "Added $AMD to my watchlist. Semiconductor play",
+        "Anyone have thoughts on $PLTR at these levels?",
+        "Good entry point for $GOOGL imo",
+        "Taking profits on this rally cash is a position too",
+        "Trimmed some $NVDA here still holding core position",
+        "Volume picking up on $META interesting",
+        "$AAPL holding 250 support nicely",
+        "Waiting for a pullback before adding more",
+        "Anyone playing $CRM earnings?",
+        "Market feels toppy but trends can extend",
+        "Picked up some $AMZN on that dip",
+        "Rotation into value names happening",
+        "$COST broke out of that range",
+        "Watching 10yr yields closely here"
+      ],
+      asshole: [
+        "lmao you guys still buying at these levels?",
+        "This is literally the top enjoy ur bags",
+        "imagine being bullish rn 😂",
+        "another day another bag holder born",
+        "bro just sell already its over",
+        "cant wait to see the loss posts tomorrow",
+        "you realize the Fed is gonna wreck this right",
+        "anyone buying here is literally giving away money",
+        "how many times do you need to learn",
+        "this sub is hopeless lol"
+      ],
+      gambler: [
+        "$NVDA 0DTE calls here we go 🔥",
+        "Full port into weeklies wish me luck",
+        "Just yolod everything into $TSLA calls",
+        "3x leveraged ETFs are the way",
+        "all in on $PLTR dont need sleep tonight",
+        "0DTE spy puts feeling it today",
+        "maxed out margin on this play lets ride",
+        "who needs a savings account when you got options",
+        "either up 500% or down 100% by friday",
+        "put my whole check into weekly calls again"
+      ],
+      woman: [
+        "Building my long-term portfolio with $VTI and $SCHD",
+        "Slow and steady wins the race. Compound interest is amazing",
+        "$COST is such an underrated dividend play",
+        "DCA into index funds. Boring but it works",
+        "Just maxed out my Roth IRA for the year",
+        "Diversification isnt sexy but it works",
+        "Adding to $O for that monthly dividend",
+        "Finally hit 6 figures in my portfolio!",
+        "Rebalancing quarterly keeps me sane",
+        "Long term holder here not worried about the noise"
+      ],
+      cocky: [
+        "Another 50k day honestly getting too easy",
+        "Up 400% this year when are you guys gonna figure it out",
+        "Put in my 2 weeks today trading full time now",
+        "portfolio just crossed 7 figures 💰",
+        "imagine working a 9-5 still lol",
+        "100k profit today might take a long weekend",
+        "26 and financially free stay mad",
+        "just bought another rental cash. trading income is insane",
+        "remember when people said day trading doesnt work 😂",
+        "paid off my house this month from trading gains"
+      ],
+      ape: [
+        "$GME moon soon 💎🙌",
+        "not selling. ever. holding til moass",
+        "hedgies r so fuk rn",
+        "added more $GME on this dip",
+        "apes together strong 🦍",
+        "this is not financial advice but im buying more",
+        "shorts still havent covered. we know the DD",
+        "$AMC and $GME both looking ready",
+        "RC knows what hes doing. trust the process",
+        "diamond handing these forever"
+      ]
+    };
+
+    // Generate AI community member
+    function generateCommunityMember() {
+      const rand = Math.random() * 100;
+      let cumulative = 0;
+      let type = 'normal';
+      
+      for (const [key, persona] of Object.entries(PERSONA_TYPES)) {
+        cumulative += persona.weight;
+        if (rand < cumulative) {
+          type = key;
+          break;
+        }
+      }
+      
+      const persona = PERSONA_TYPES[type];
+      const name = persona.names[Math.floor(Math.random() * persona.names.length)];
+      const handleBase = persona.handles[Math.floor(Math.random() * persona.handles.length)];
+      const handleNum = Math.floor(Math.random() * 999) + 1;
+      
+      return {
+        name: name,
+        handle: `@${handleBase}${handleNum}`,
+        avatar: name.charAt(0).toUpperCase(),
+        type: type
+      };
+    }
+
+    // Generate AI post
+    function generateAIPost(member) {
+      const templates = POST_TEMPLATES[member.type];
+      const text = templates[Math.floor(Math.random() * templates.length)];
+      const timeOptions = ['1m', '2m', '3m', '5m', '8m', '12m', '15m', '23m', '34m', '45m', '1h', '2h', '3h'];
+      
+      return {
+        user: member,
+        text: text,
+        time: timeOptions[Math.floor(Math.random() * timeOptions.length)],
+        likes: Math.floor(Math.random() * 50),
+        dislikes: Math.floor(Math.random() * 10),
+        liked: false,
+        disliked: false,
+        replies: []
+      };
+    }
+
+    // Initial posts
+    let posts = [];
+    let nextPostId = 1;
+
+    function initializePosts() {
+      const savedPosts = localStorage.getItem('apehub_posts_v3');
+      if (savedPosts) {
+        posts = JSON.parse(savedPosts);
+        nextPostId = posts.length > 0 ? Math.max(...posts.map(p => p.id)) + 1 : 1;
+        return;
+      }
+
+      // Generate initial posts with varied personas
+      const initialCount = 15;
+      for (let i = 0; i < initialCount; i++) {
+        const member = generateCommunityMember();
+        const post = generateAIPost(member);
+        post.id = nextPostId++;
+        post.timestamp = Date.now() - (i * 300000);
+        posts.push(post);
+      }
+
+      // Add the current user's first post
+      posts.unshift({
+        id: nextPostId++,
+        user: currentUser,
+        text: '$NVDA going crazy today! AI chip demand is insane 🚀 #nvidia #stocks',
+        time: '5m',
+        timestamp: Date.now() - 300000,
+        likes: 24,
+        dislikes: 2,
+        liked: false,
+        disliked: false,
+        replies: []
+      });
+
+      savePosts();
+    }
+
+    // Render all posts (only called once on init)
+    function renderPosts() {
+      const feed = document.getElementById('feed');
+      
+      if (posts.length === 0) {
+        feed.innerHTML = `
+          <div class="empty-state">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+            </svg>
+            <h3>No posts yet</h3>
+            <p>Be the first to share something!</p>
+          </div>
+        `;
+        return;
+      }
+
+      feed.innerHTML = posts.map(post => renderPostHTML(post)).join('');
+    }
+
+    // Render single post HTML
+    function renderPostHTML(post) {
+      const avatarClass = post.user.type && post.user.type !== 'normal' ? post.user.type : '';
+      return `
+        <div class="post-card" id="post-${post.id}">
+          <div class="post-header">
+            <div class="post-avatar ${avatarClass}">${post.user.avatar}</div>
+            <div class="post-content">
+              <div class="post-meta">
+                <span class="post-username">${post.user.name}</span>
+                <span class="post-handle">${post.user.handle}</span>
+                <div class="post-dot"></div>
+                <span class="post-time">${post.time}</span>
+              </div>
+              <div class="post-text">${formatPostText(post.text)}</div>
+              <div class="post-actions">
+                <button class="action-btn reply" onclick="toggleReply(${post.id})">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+                  </svg>
+                  <span id="reply-count-${post.id}">${post.replies.length || ''}</span>
+                </button>
+                <button class="action-btn like ${post.liked ? 'active' : ''}" id="like-btn-${post.id}" onclick="toggleLike(${post.id})">
+                  <svg viewBox="0 0 24 24" fill="${post.liked ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="2">
+                    <path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"/>
+                  </svg>
+                  <span id="like-count-${post.id}">${post.likes}</span>
+                </button>
+                <button class="action-btn dislike ${post.disliked ? 'active' : ''}" id="dislike-btn-${post.id}" onclick="toggleDislike(${post.id})">
+                  <svg viewBox="0 0 24 24" fill="${post.disliked ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="2">
+                    <path d="M10 15v4a3 3 0 0 0 3 3l4-9V2H5.72a2 2 0 0 0-2 1.7l-1.38 9a2 2 0 0 0 2 2.3zm7-13h2.67A2.31 2.31 0 0 1 22 4v7a2.31 2.31 0 0 1-2.33 2H17"/>
+                  </svg>
+                  <span id="dislike-count-${post.id}">${post.dislikes}</span>
+                </button>
+              </div>
+              
+              <div class="reply-section" id="reply-section-${post.id}">
+                <div class="reply-input-container">
+                  <input type="text" class="reply-input" id="reply-input-${post.id}" placeholder="Post your reply..." onkeypress="handleReplyKeypress(event, ${post.id})">
+                  <button class="reply-send-btn" onclick="submitReply(${post.id})">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <line x1="22" y1="2" x2="11" y2="13"></line>
+                      <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                    </svg>
+                  </button>
+                </div>
+              </div>
+              
+              <div class="replies-container" id="replies-${post.id}">
+                ${post.replies.map(reply => `
+                  <div class="reply-card">
+                    <div class="reply-avatar">${reply.user.avatar}</div>
+                    <div class="reply-content">
+                      <div class="reply-meta">
+                        <span class="reply-username">${reply.user.name}</span>
+                        <span class="reply-time">${reply.time}</span>
+                      </div>
+                      <div class="reply-text">${reply.text}</div>
+                    </div>
+                  </div>
+                `).join('')}
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    // Format post text with tickers and hashtags
+    function formatPostText(text) {
+      return text
+        .replace(/\$([A-Z]+)/g, '<span class="ticker">$$$1</span>')
+        .replace(/#(\w+)/g, '<span class="hashtag">#$1</span>');
+    }
+
+    // Toggle compose modal
+    function toggleCompose() {
+      const overlay = document.getElementById('compose-overlay');
+      const modal = document.getElementById('compose-modal');
+      const fab = document.getElementById('fab');
+      const input = document.getElementById('compose-input');
+      
+      overlay.classList.toggle('open');
+      modal.classList.toggle('open');
+      fab.classList.toggle('open');
+      
+      if (modal.classList.contains('open')) {
+        setTimeout(() => input.focus(), 300);
+      } else {
+        input.value = '';
+        updateCharCount();
+      }
+    }
+
+    // Update character count
+    function updateCharCount() {
+      const input = document.getElementById('compose-input');
+      const count = document.getElementById('char-count');
+      const submit = document.getElementById('compose-submit');
+      const length = input.value.length;
+      
+      count.textContent = `${length} / 280`;
+      count.classList.remove('warning', 'danger');
+      
+      if (length > 250) {
+        count.classList.add('danger');
+      } else if (length > 200) {
+        count.classList.add('warning');
+      }
+      
+      submit.disabled = length === 0;
+    }
+
+    // Submit new post
+    function submitPost() {
+      const input = document.getElementById('compose-input');
+      const text = input.value.trim();
+      
+      if (!text) return;
+      
+      const newPost = {
+        id: nextPostId++,
+        user: currentUser,
+        text: text,
+        time: 'now',
+        timestamp: Date.now(),
+        likes: 0,
+        dislikes: 0,
+        liked: false,
+        disliked: false,
+        replies: []
+      };
+      
+      posts.unshift(newPost);
+      
+      // Insert at top of feed with animation
+      const feed = document.getElementById('feed');
+      const newPostHTML = renderPostHTML(newPost);
+      feed.insertAdjacentHTML('afterbegin', newPostHTML);
+      document.getElementById(`post-${newPost.id}`).classList.add('new-post');
+      
+      toggleCompose();
+      savePosts();
+    }
+
+    // Toggle like - NO full re-render
+    function toggleLike(postId) {
+      const post = posts.find(p => p.id === postId);
+      if (!post) return;
+      
+      const likeBtn = document.getElementById(`like-btn-${postId}`);
+      const likeCount = document.getElementById(`like-count-${postId}`);
+      const dislikeBtn = document.getElementById(`dislike-btn-${postId}`);
+      const dislikeCount = document.getElementById(`dislike-count-${postId}`);
+      
+      if (post.liked) {
+        post.liked = false;
+        post.likes--;
+        likeBtn.classList.remove('active');
+        likeBtn.querySelector('svg').setAttribute('fill', 'none');
+      } else {
+        if (post.disliked) {
+          post.disliked = false;
+          post.dislikes--;
+          dislikeBtn.classList.remove('active');
+          dislikeBtn.querySelector('svg').setAttribute('fill', 'none');
+          dislikeCount.textContent = post.dislikes;
+        }
+        post.liked = true;
+        post.likes++;
+        likeBtn.classList.add('active');
+        likeBtn.querySelector('svg').setAttribute('fill', 'currentColor');
+      }
+      
+      likeCount.textContent = post.likes;
+      savePosts();
+    }
+
+    // Toggle dislike - NO full re-render
+    function toggleDislike(postId) {
+      const post = posts.find(p => p.id === postId);
+      if (!post) return;
+      
+      const dislikeBtn = document.getElementById(`dislike-btn-${postId}`);
+      const dislikeCount = document.getElementById(`dislike-count-${postId}`);
+      const likeBtn = document.getElementById(`like-btn-${postId}`);
+      const likeCount = document.getElementById(`like-count-${postId}`);
+      
+      if (post.disliked) {
+        post.disliked = false;
+        post.dislikes--;
+        dislikeBtn.classList.remove('active');
+        dislikeBtn.querySelector('svg').setAttribute('fill', 'none');
+      } else {
+        if (post.liked) {
+          post.liked = false;
+          post.likes--;
+          likeBtn.classList.remove('active');
+          likeBtn.querySelector('svg').setAttribute('fill', 'none');
+          likeCount.textContent = post.likes;
+        }
+        post.disliked = true;
+        post.dislikes++;
+        dislikeBtn.classList.add('active');
+        dislikeBtn.querySelector('svg').setAttribute('fill', 'currentColor');
+      }
+      
+      dislikeCount.textContent = post.dislikes;
+      savePosts();
+    }
+
+    // Toggle reply section - NO re-render
+    function toggleReply(postId) {
+      const section = document.getElementById(`reply-section-${postId}`);
+      const input = document.getElementById(`reply-input-${postId}`);
+      
+      section.classList.toggle('open');
+      if (section.classList.contains('open')) {
+        input.focus();
+      }
+    }
+
+    // Handle reply keypress
+    function handleReplyKeypress(event, postId) {
+      if (event.key === 'Enter') {
+        submitReply(postId);
+      }
+    }
+
+    // Submit reply - targeted update
+    function submitReply(postId) {
+      const input = document.getElementById(`reply-input-${postId}`);
+      const text = input.value.trim();
+      
+      if (!text) return;
+      
+      const post = posts.find(p => p.id === postId);
+      if (!post) return;
+      
+      const newReply = {
+        user: currentUser,
+        text: text,
+        time: 'now'
+      };
+      
+      post.replies.push(newReply);
+      
+      // Update replies container
+      const repliesContainer = document.getElementById(`replies-${postId}`);
+      repliesContainer.innerHTML += `
+        <div class="reply-card">
+          <div class="reply-avatar">${newReply.user.avatar}</div>
+          <div class="reply-content">
+            <div class="reply-meta">
+              <span class="reply-username">${newReply.user.name}</span>
+              <span class="reply-time">${newReply.time}</span>
+            </div>
+            <div class="reply-text">${newReply.text}</div>
+          </div>
+        </div>
+      `;
+      
+      // Update reply count
+      const replyCount = document.getElementById(`reply-count-${postId}`);
+      replyCount.textContent = post.replies.length;
+      
+      input.value = '';
+      savePosts();
+    }
+
+    // Save posts to localStorage
+    function savePosts() {
+      localStorage.setItem('apehub_posts_v3', JSON.stringify(posts));
+    }
+
+    // Update online count (randomize between 150-222)
+    function updateOnlineCount() {
+      const count = Math.floor(Math.random() * (MAX_COMMUNITY_SIZE - 150)) + 150;
+      document.getElementById('online-count').textContent = `${count} online`;
+    }
+
+    // Initialize
+    initializePosts();
+    renderPosts();
+    updateOnlineCount();
+    
+    // Periodically update online count
+    setInterval(updateOnlineCount, 30000);
+  </script>
+</body>
+</html>

@@ -1,0 +1,1081 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Markets | ApeHub</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: #0a0a0f;
+      min-height: 100vh;
+      font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Instrument Sans', sans-serif;
+      color: #fff;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .container {
+      max-width: 500px;
+      margin: 0 auto;
+      padding: 0;
+      padding-bottom: calc(100px + env(safe-area-inset-bottom));
+    }
+
+    /* Top Bar */
+    .top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 16px 24px;
+      padding-top: calc(16px + env(safe-area-inset-top));
+    }
+
+    .page-title {
+      font-size: 28px;
+      font-weight: 700;
+      color: #fff;
+    }
+
+    .page-title span {
+      color: #a855f7;
+    }
+
+    .date-badge {
+      font-size: 12px;
+      color: rgba(255, 255, 255, 0.5);
+    }
+
+    /* Region Tabs */
+    .region-tabs {
+      display: flex;
+      gap: 0;
+      margin: 0 24px 24px;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 12px;
+      padding: 4px;
+    }
+
+    .region-tab {
+      flex: 1;
+      padding: 12px 16px;
+      background: transparent;
+      border: none;
+      border-radius: 10px;
+      font-size: 14px;
+      font-weight: 600;
+      color: rgba(255, 255, 255, 0.5);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .region-tab.active {
+      background: #a855f7;
+      color: #fff;
+    }
+
+    /* Section Headers */
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 24px;
+      margin-bottom: 16px;
+      cursor: pointer;
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .section-header:active {
+      opacity: 0.7;
+    }
+
+    .section-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .section-chevron {
+      width: 16px;
+      height: 16px;
+      transition: transform 0.3s ease;
+      color: rgba(255, 255, 255, 0.4);
+    }
+
+    .section-header.collapsed .section-chevron {
+      transform: rotate(-90deg);
+    }
+
+    .section-content {
+      overflow: hidden;
+      transition: max-height 0.3s ease, opacity 0.3s ease;
+      max-height: 2000px;
+      opacity: 1;
+    }
+
+    .section-content.collapsed {
+      max-height: 0;
+      opacity: 0;
+      margin-bottom: 0;
+    }
+
+    .section-badge {
+      font-size: 11px;
+      font-weight: 600;
+      color: #a855f7;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    /* Market Overview Cards */
+    .market-overview {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+      padding: 0 24px;
+      margin-bottom: 32px;
+    }
+
+    .market-card {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: 16px;
+      padding: 16px;
+    }
+
+    .market-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+
+    .market-name {
+      font-size: 12px;
+      font-weight: 600;
+      color: rgba(255, 255, 255, 0.5);
+    }
+
+    .market-status {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #00d775;
+    }
+
+    .market-status.closed {
+      background: #ff4757;
+    }
+
+    .market-value {
+      font-size: 20px;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 4px;
+    }
+
+    .market-change {
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .market-change.up {
+      color: #00d775;
+    }
+
+    .market-change.down {
+      color: #ff4757;
+    }
+
+    .market-sparkline {
+      margin-top: 12px;
+      height: 30px;
+    }
+
+    /* Stock List Section */
+    .stock-section {
+      margin-bottom: 32px;
+    }
+
+    .stock-list {
+      padding: 0 24px;
+    }
+
+    .stock-row {
+      display: grid;
+      grid-template-columns: auto 1fr auto auto;
+      gap: 12px;
+      align-items: center;
+      padding: 14px 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+    }
+
+    .stock-rank {
+      width: 24px;
+      height: 24px;
+      background: rgba(168, 85, 247, 0.1);
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      font-weight: 700;
+      color: #a855f7;
+    }
+
+    .stock-info {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      min-width: 0;
+    }
+
+    .stock-symbol {
+      font-size: 15px;
+      font-weight: 700;
+      color: #fff;
+    }
+
+    .stock-name {
+      font-size: 12px;
+      color: rgba(255, 255, 255, 0.4);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .stock-price {
+      font-size: 15px;
+      font-weight: 600;
+      color: #fff;
+      text-align: right;
+    }
+
+    .stock-change-col {
+      text-align: right;
+      min-width: 70px;
+    }
+
+    .stock-change {
+      font-size: 14px;
+      font-weight: 600;
+      padding: 6px 10px;
+      border-radius: 8px;
+    }
+
+    .stock-change.up {
+      background: rgba(0, 215, 117, 0.1);
+      color: #00d775;
+    }
+
+    .stock-change.down {
+      background: rgba(255, 71, 87, 0.1);
+      color: #ff4757;
+    }
+
+    /* Horizontal Scrolling Cards */
+    .scroll-section {
+      margin-bottom: 32px;
+    }
+
+    .scroll-container {
+      display: flex;
+      gap: 12px;
+      padding: 0 24px;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .scroll-container::-webkit-scrollbar {
+      display: none;
+    }
+
+    .scroll-card {
+      flex-shrink: 0;
+      width: 140px;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: 14px;
+      padding: 14px;
+    }
+
+    .scroll-card-symbol {
+      font-size: 14px;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 4px;
+    }
+
+    .scroll-card-name {
+      font-size: 11px;
+      color: rgba(255, 255, 255, 0.4);
+      margin-bottom: 10px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .scroll-card-price {
+      font-size: 16px;
+      font-weight: 600;
+      color: #fff;
+      margin-bottom: 4px;
+    }
+
+    .scroll-card-change {
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .scroll-card-change.up {
+      color: #00d775;
+    }
+
+    .scroll-card-change.down {
+      color: #ff4757;
+    }
+
+    /* Gainers/Losers Toggle */
+    .toggle-container {
+      display: flex;
+      gap: 0;
+      margin: 0 24px 16px;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 10px;
+      padding: 4px;
+    }
+
+    .toggle-btn {
+      flex: 1;
+      padding: 10px 16px;
+      background: transparent;
+      border: none;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      color: rgba(255, 255, 255, 0.5);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .toggle-btn.active {
+      background: #00d775;
+      color: #fff;
+    }
+
+    .toggle-btn.active.losers {
+      background: #ff4757;
+    }
+
+    /* Volume Badge */
+    .volume-badge {
+      font-size: 11px;
+      color: rgba(255, 255, 255, 0.4);
+      margin-top: 2px;
+    }
+
+    /* Bottom Nav */
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: #0a0a0f;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      display: flex;
+      justify-content: space-around;
+      padding: 12px 0;
+      padding-bottom: calc(12px + env(safe-area-inset-bottom));
+      max-width: 500px;
+      margin: 0 auto;
+    }
+
+    .nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      text-decoration: none;
+      color: rgba(255, 255, 255, 0.4);
+      transition: all 0.2s;
+    }
+
+    .nav-item.active {
+      color: #a855f7;
+    }
+
+    .nav-item svg {
+      width: 24px;
+      height: 24px;
+    }
+
+    .nav-item span {
+      font-size: 11px;
+      font-weight: 500;
+    }
+
+    /* AI Badge */
+    .ai-generated {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      color: rgba(168, 85, 247, 0.8);
+      padding: 0 24px;
+      margin-bottom: 16px;
+    }
+
+    .ai-generated svg {
+      width: 14px;
+      height: 14px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="top-bar">
+      <h1 class="page-title"><span>Markets</span></h1>
+      <div class="date-badge" id="current-date">Jan 12, 2026</div>
+    </div>
+
+    <div class="ai-generated">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M12 2a4 4 0 0 1 4 4v1h2a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2h2V6a4 4 0 0 1 4-4z"/>
+      </svg>
+      AI-generated market data • Updated every minute
+    </div>
+
+    <!-- Region Tabs -->
+    <div class="region-tabs">
+      <button class="region-tab active" data-region="us">🇺🇸 US</button>
+      <button class="region-tab" data-region="europe">🇪🇺 Europe</button>
+      <button class="region-tab" data-region="asia">🌏 Asia</button>
+    </div>
+
+    <!-- Market Overview -->
+    <div class="section-header" onclick="toggleSection(this)">
+      <h2 class="section-title">
+        Market Overview
+        <svg class="section-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polyline points="6 9 12 15 18 9"></polyline>
+        </svg>
+      </h2>
+      <span class="section-badge">Live</span>
+    </div>
+
+    <div class="section-content">
+      <div class="market-overview" id="market-overview">
+        <!-- US Markets -->
+        <div class="market-card" data-region="us">
+          <div class="market-card-header">
+            <span class="market-name">S&P 500</span>
+            <div class="market-status"></div>
+          </div>
+          <div class="market-value">6,082.45</div>
+          <div class="market-change up">+1.24% (+74.68)</div>
+        </div>
+        <div class="market-card" data-region="us">
+          <div class="market-card-header">
+            <span class="market-name">NASDAQ</span>
+            <div class="market-status"></div>
+          </div>
+          <div class="market-value">19,845.32</div>
+          <div class="market-change up">+1.67% (+325.42)</div>
+        </div>
+        <div class="market-card" data-region="us">
+          <div class="market-card-header">
+            <span class="market-name">DOW JONES</span>
+            <div class="market-status"></div>
+          </div>
+          <div class="market-value">44,287.14</div>
+          <div class="market-change up">+0.89% (+389.56)</div>
+        </div>
+        <div class="market-card" data-region="us">
+          <div class="market-card-header">
+            <span class="market-name">RUSSELL 2000</span>
+            <div class="market-status"></div>
+          </div>
+          <div class="market-value">2,345.67</div>
+          <div class="market-change down">-0.34% (-8.02)</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Trending Stocks -->
+    <div class="scroll-section">
+      <div class="section-header" onclick="toggleSection(this)">
+        <h2 class="section-title">
+          🔥 Trending Today
+          <svg class="section-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="6 9 12 15 18 9"></polyline>
+          </svg>
+        </h2>
+        <span class="section-badge">AI Pick</span>
+      </div>
+      <div class="section-content">
+        <div class="scroll-container">
+          <div class="scroll-card">
+            <div class="scroll-card-symbol">NVDA</div>
+          <div class="scroll-card-name">NVIDIA Corp</div>
+          <div class="scroll-card-price">$140.14</div>
+          <div class="scroll-card-change up">+4.52%</div>
+        </div>
+        <div class="scroll-card">
+          <div class="scroll-card-symbol">TSLA</div>
+          <div class="scroll-card-name">Tesla Inc</div>
+          <div class="scroll-card-price">$394.36</div>
+          <div class="scroll-card-change up">+3.87%</div>
+        </div>
+        <div class="scroll-card">
+          <div class="scroll-card-symbol">PLTR</div>
+          <div class="scroll-card-name">Palantir</div>
+          <div class="scroll-card-price">$78.34</div>
+          <div class="scroll-card-change up">+4.56%</div>
+        </div>
+        <div class="scroll-card">
+          <div class="scroll-card-symbol">SMCI</div>
+          <div class="scroll-card-name">Super Micro</div>
+          <div class="scroll-card-price">$38.34</div>
+          <div class="scroll-card-change up">+5.67%</div>
+        </div>
+        <div class="scroll-card">
+          <div class="scroll-card-symbol">ARM</div>
+          <div class="scroll-card-name">Arm Holdings</div>
+          <div class="scroll-card-price">$168.92</div>
+          <div class="scroll-card-change up">+3.45%</div>
+        </div>
+        <div class="scroll-card">
+          <div class="scroll-card-symbol">COIN</div>
+          <div class="scroll-card-name">Coinbase</div>
+          <div class="scroll-card-price">$278.34</div>
+          <div class="scroll-card-change up">+5.67%</div>
+        </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Most Active -->
+    <div class="stock-section">
+      <div class="section-header" onclick="toggleSection(this)">
+        <h2 class="section-title">
+          📊 Most Active
+          <svg class="section-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="6 9 12 15 18 9"></polyline>
+          </svg>
+        </h2>
+        <span class="section-badge">By Volume</span>
+      </div>
+      <div class="section-content">
+        <div class="stock-list">
+          <div class="stock-row">
+            <div class="stock-rank">1</div>
+            <div class="stock-info">
+              <span class="stock-symbol">NVDA</span>
+              <span class="stock-name">NVIDIA Corporation</span>
+              <span class="volume-badge">Vol: 89.2M</span>
+            </div>
+            <div class="stock-price">$140.14</div>
+            <div class="stock-change-col">
+              <span class="stock-change up">+4.52%</span>
+          </div>
+        </div>
+        <div class="stock-row">
+          <div class="stock-rank">2</div>
+          <div class="stock-info">
+            <span class="stock-symbol">TSLA</span>
+            <span class="stock-name">Tesla Inc</span>
+            <span class="volume-badge">Vol: 72.5M</span>
+          </div>
+          <div class="stock-price">$394.36</div>
+          <div class="stock-change-col">
+            <span class="stock-change up">+3.87%</span>
+          </div>
+        </div>
+        <div class="stock-row">
+          <div class="stock-rank">3</div>
+          <div class="stock-info">
+            <span class="stock-symbol">AAPL</span>
+            <span class="stock-name">Apple Inc</span>
+            <span class="volume-badge">Vol: 58.3M</span>
+          </div>
+          <div class="stock-price">$248.13</div>
+          <div class="stock-change-col">
+            <span class="stock-change up">+2.34%</span>
+          </div>
+        </div>
+        <div class="stock-row">
+          <div class="stock-rank">4</div>
+          <div class="stock-info">
+            <span class="stock-symbol">AMD</span>
+            <span class="stock-name">Advanced Micro Devices</span>
+            <span class="volume-badge">Vol: 52.1M</span>
+          </div>
+          <div class="stock-price">$124.56</div>
+          <div class="stock-change-col">
+            <span class="stock-change up">+3.42%</span>
+          </div>
+        </div>
+        <div class="stock-row">
+          <div class="stock-rank">5</div>
+          <div class="stock-info">
+            <span class="stock-symbol">PLTR</span>
+            <span class="stock-name">Palantir Technologies</span>
+            <span class="volume-badge">Vol: 48.7M</span>
+          </div>
+          <div class="stock-price">$78.34</div>
+          <div class="stock-change-col">
+            <span class="stock-change up">+4.56%</span>
+          </div>
+        </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Top Movers -->
+    <div class="stock-section">
+      <div class="section-header" onclick="toggleSection(this)">
+        <h2 class="section-title">
+          ⚡ Top Movers
+          <svg class="section-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="6 9 12 15 18 9"></polyline>
+          </svg>
+        </h2>
+        <span class="section-badge">High Momentum</span>
+      </div>
+      <div class="section-content">
+        <div class="stock-list">
+          <div class="stock-row">
+            <div class="stock-rank">1</div>
+            <div class="stock-info">
+              <span class="stock-symbol">RGTI</span>
+              <span class="stock-name">Rigetti Computing</span>
+            </div>
+            <div class="stock-price">$18.92</div>
+            <div class="stock-change-col">
+              <span class="stock-change up">+8.45%</span>
+            </div>
+          </div>
+          <div class="stock-row">
+            <div class="stock-rank">2</div>
+            <div class="stock-info">
+              <span class="stock-symbol">IONQ</span>
+              <span class="stock-name">IonQ Inc</span>
+            </div>
+            <div class="stock-price">$48.34</div>
+            <div class="stock-change-col">
+              <span class="stock-change up">+6.78%</span>
+            </div>
+          </div>
+          <div class="stock-row">
+            <div class="stock-rank">3</div>
+            <div class="stock-info">
+              <span class="stock-symbol">SMCI</span>
+              <span class="stock-name">Super Micro Computer</span>
+            </div>
+            <div class="stock-price">$38.34</div>
+            <div class="stock-change-col">
+              <span class="stock-change up">+5.67%</span>
+            </div>
+          </div>
+        <div class="stock-row">
+          <div class="stock-rank">4</div>
+          <div class="stock-info">
+            <span class="stock-symbol">COIN</span>
+            <span class="stock-name">Coinbase Global</span>
+          </div>
+          <div class="stock-price">$278.34</div>
+          <div class="stock-change-col">
+            <span class="stock-change up">+5.67%</span>
+          </div>
+        </div>
+        <div class="stock-row">
+          <div class="stock-rank">5</div>
+          <div class="stock-info">
+            <span class="stock-symbol">MSTR</span>
+            <span class="stock-name">MicroStrategy</span>
+          </div>
+          <div class="stock-price">$412.56</div>
+          <div class="stock-change-col">
+            <span class="stock-change up">+5.23%</span>
+          </div>
+        </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Day Gainers / Losers -->
+    <div class="stock-section">
+      <div class="section-header" onclick="toggleSection(this)">
+        <h2 class="section-title">
+          📈 Daily Performance
+          <svg class="section-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="6 9 12 15 18 9"></polyline>
+          </svg>
+        </h2>
+      </div>
+      
+      <div class="section-content">
+        <div class="toggle-container">
+          <button class="toggle-btn active" id="gainers-btn">Day Gainers</button>
+          <button class="toggle-btn" id="losers-btn">Day Losers</button>
+        </div>
+
+        <!-- Gainers List -->
+        <div class="stock-list" id="gainers-list">
+          <div class="stock-row">
+            <div class="stock-rank">1</div>
+            <div class="stock-info">
+              <span class="stock-symbol">RGTI</span>
+              <span class="stock-name">Rigetti Computing</span>
+            </div>
+            <div class="stock-price">$18.92</div>
+            <div class="stock-change-col">
+              <span class="stock-change up">+8.45%</span>
+            </div>
+          </div>
+          <div class="stock-row">
+            <div class="stock-rank">2</div>
+            <div class="stock-info">
+              <span class="stock-symbol">IONQ</span>
+              <span class="stock-name">IonQ Inc</span>
+            </div>
+            <div class="stock-price">$48.34</div>
+            <div class="stock-change-col">
+              <span class="stock-change up">+6.78%</span>
+            </div>
+          </div>
+          <div class="stock-row">
+            <div class="stock-rank">3</div>
+            <div class="stock-info">
+              <span class="stock-symbol">SMCI</span>
+              <span class="stock-name">Super Micro Computer</span>
+            </div>
+            <div class="stock-price">$38.34</div>
+            <div class="stock-change-col">
+              <span class="stock-change up">+5.67%</span>
+            </div>
+          </div>
+          <div class="stock-row">
+            <div class="stock-rank">4</div>
+          <div class="stock-info">
+            <span class="stock-symbol">COIN</span>
+            <span class="stock-name">Coinbase Global</span>
+          </div>
+          <div class="stock-price">$278.34</div>
+          <div class="stock-change-col">
+            <span class="stock-change up">+5.67%</span>
+          </div>
+        </div>
+        <div class="stock-row">
+          <div class="stock-rank">5</div>
+          <div class="stock-info">
+            <span class="stock-symbol">NVDA</span>
+            <span class="stock-name">NVIDIA Corporation</span>
+          </div>
+          <div class="stock-price">$140.14</div>
+          <div class="stock-change-col">
+            <span class="stock-change up">+4.52%</span>
+          </div>
+        </div>
+        <div class="stock-row">
+          <div class="stock-rank">6</div>
+          <div class="stock-info">
+            <span class="stock-symbol">PLTR</span>
+            <span class="stock-name">Palantir Technologies</span>
+          </div>
+          <div class="stock-price">$78.34</div>
+          <div class="stock-change-col">
+            <span class="stock-change up">+4.56%</span>
+          </div>
+        </div>
+        <div class="stock-row">
+          <div class="stock-rank">7</div>
+          <div class="stock-info">
+            <span class="stock-symbol">RBLX</span>
+            <span class="stock-name">Roblox Corporation</span>
+          </div>
+          <div class="stock-price">$58.34</div>
+          <div class="stock-change-col">
+            <span class="stock-change up">+4.23%</span>
+          </div>
+        </div>
+        <div class="stock-row">
+          <div class="stock-rank">8</div>
+          <div class="stock-info">
+            <span class="stock-symbol">HOOD</span>
+            <span class="stock-name">Robinhood Markets</span>
+          </div>
+          <div class="stock-price">$42.34</div>
+          <div class="stock-change-col">
+            <span class="stock-change up">+4.23%</span>
+          </div>
+        </div>
+        <div class="stock-row">
+          <div class="stock-rank">9</div>
+          <div class="stock-info">
+            <span class="stock-symbol">TSLA</span>
+            <span class="stock-name">Tesla Inc</span>
+          </div>
+          <div class="stock-price">$394.36</div>
+          <div class="stock-change-col">
+            <span class="stock-change up">+3.87%</span>
+          </div>
+        </div>
+        <div class="stock-row">
+          <div class="stock-rank">10</div>
+          <div class="stock-info">
+            <span class="stock-symbol">ARM</span>
+            <span class="stock-name">Arm Holdings plc</span>
+          </div>
+          <div class="stock-price">$168.92</div>
+          <div class="stock-change-col">
+            <span class="stock-change up">+3.45%</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Losers List (hidden by default) -->
+      <div class="stock-list" id="losers-list" style="display: none;">
+        <div class="stock-row">
+          <div class="stock-rank">1</div>
+          <div class="stock-info">
+            <span class="stock-symbol">XOM</span>
+            <span class="stock-name">Exxon Mobil Corp</span>
+          </div>
+          <div class="stock-price">$105.67</div>
+          <div class="stock-change-col">
+            <span class="stock-change down">-3.45%</span>
+          </div>
+        </div>
+        <div class="stock-row">
+          <div class="stock-rank">2</div>
+          <div class="stock-info">
+            <span class="stock-symbol">CVX</span>
+            <span class="stock-name">Chevron Corporation</span>
+          </div>
+          <div class="stock-price">$145.23</div>
+          <div class="stock-change-col">
+            <span class="stock-change down">-2.87%</span>
+          </div>
+        </div>
+        <div class="stock-row">
+          <div class="stock-rank">3</div>
+          <div class="stock-info">
+            <span class="stock-symbol">BA</span>
+            <span class="stock-name">Boeing Company</span>
+          </div>
+          <div class="stock-price">$174.12</div>
+          <div class="stock-change-col">
+            <span class="stock-change down">-2.34%</span>
+          </div>
+        </div>
+        <div class="stock-row">
+          <div class="stock-rank">4</div>
+          <div class="stock-info">
+            <span class="stock-symbol">COP</span>
+            <span class="stock-name">ConocoPhillips</span>
+          </div>
+          <div class="stock-price">$95.67</div>
+          <div class="stock-change-col">
+            <span class="stock-change down">-2.12%</span>
+          </div>
+        </div>
+        <div class="stock-row">
+          <div class="stock-rank">5</div>
+          <div class="stock-info">
+            <span class="stock-symbol">OXY</span>
+            <span class="stock-name">Occidental Petroleum</span>
+          </div>
+          <div class="stock-price">$47.23</div>
+          <div class="stock-change-col">
+            <span class="stock-change down">-1.89%</span>
+          </div>
+        </div>
+        <div class="stock-row">
+          <div class="stock-rank">6</div>
+          <div class="stock-info">
+            <span class="stock-symbol">NKE</span>
+            <span class="stock-name">Nike Inc</span>
+          </div>
+          <div class="stock-price">$71.45</div>
+          <div class="stock-change-col">
+            <span class="stock-change down">-1.67%</span>
+          </div>
+        </div>
+        <div class="stock-row">
+          <div class="stock-rank">7</div>
+          <div class="stock-info">
+            <span class="stock-symbol">INTC</span>
+            <span class="stock-name">Intel Corporation</span>
+          </div>
+          <div class="stock-price">$19.53</div>
+          <div class="stock-change-col">
+            <span class="stock-change down">-1.56%</span>
+          </div>
+        </div>
+        <div class="stock-row">
+          <div class="stock-rank">8</div>
+          <div class="stock-info">
+            <span class="stock-symbol">UNH</span>
+            <span class="stock-name">UnitedHealth Group</span>
+          </div>
+          <div class="stock-price">$496.12</div>
+          <div class="stock-change-col">
+            <span class="stock-change down">-1.24%</span>
+          </div>
+        </div>
+        <div class="stock-row">
+          <div class="stock-rank">9</div>
+          <div class="stock-info">
+            <span class="stock-symbol">DG</span>
+            <span class="stock-name">Dollar General Corp</span>
+          </div>
+          <div class="stock-price">$77.65</div>
+          <div class="stock-change-col">
+            <span class="stock-change down">-0.89%</span>
+          </div>
+        </div>
+        <div class="stock-row">
+          <div class="stock-rank">10</div>
+          <div class="stock-info">
+            <span class="stock-symbol">MSFT</span>
+            <span class="stock-name">Microsoft Corporation</span>
+          </div>
+          <div class="stock-price">$435.10</div>
+          <div class="stock-change-col">
+            <span class="stock-change down">-0.87%</span>
+          </div>
+        </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Bottom Nav -->
+  <nav class="bottom-nav">
+    <a href="dashboard.html" class="nav-item">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+        <polyline points="9 22 9 12 15 12 15 22"/>
+      </svg>
+      <span>Home</span>
+    </a>
+    <a href="news.html" class="nav-item">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M12 2a4 4 0 0 1 4 4v1h2a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2h2V6a4 4 0 0 1 4-4z"/>
+        <circle cx="12" cy="13" r="3"/>
+        <path d="M12 16v2"/>
+      </svg>
+      <span>AI News</span>
+    </a>
+    <a href="markets.html" class="nav-item active">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+      </svg>
+      <span>Markets</span>
+    </a>
+    <a href="chat.html" class="nav-item">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+      </svg>
+      <span>Chat</span>
+    </a>
+  </nav>
+
+  <script>
+    // Toggle section collapse
+    function toggleSection(header) {
+      header.classList.toggle('collapsed');
+      const content = header.nextElementSibling;
+      if (content && content.classList.contains('section-content')) {
+        content.classList.toggle('collapsed');
+      }
+    }
+
+    // Update date
+    const now = new Date();
+    const options = { month: 'short', day: 'numeric', year: 'numeric' };
+    document.getElementById('current-date').textContent = now.toLocaleDateString('en-US', options);
+
+    // Region tab switching
+    document.querySelectorAll('.region-tab').forEach(tab => {
+      tab.addEventListener('click', function() {
+        document.querySelectorAll('.region-tab').forEach(t => t.classList.remove('active'));
+        this.classList.add('active');
+        
+        const region = this.dataset.region;
+        updateMarketData(region);
+      });
+    });
+
+    // Gainers/Losers toggle
+    const gainersBtn = document.getElementById('gainers-btn');
+    const losersBtn = document.getElementById('losers-btn');
+    const gainersList = document.getElementById('gainers-list');
+    const losersList = document.getElementById('losers-list');
+
+    gainersBtn.addEventListener('click', function() {
+      gainersBtn.classList.add('active');
+      gainersBtn.classList.remove('losers');
+      losersBtn.classList.remove('active');
+      losersBtn.classList.remove('losers');
+      gainersList.style.display = 'block';
+      losersList.style.display = 'none';
+    });
+
+    losersBtn.addEventListener('click', function() {
+      losersBtn.classList.add('active', 'losers');
+      gainersBtn.classList.remove('active');
+      gainersList.style.display = 'none';
+      losersList.style.display = 'block';
+    });
+
+    // Update market data based on region
+    function updateMarketData(region) {
+      const marketOverview = document.getElementById('market-overview');
+      
+      const marketData = {
+        us: [
+          { name: 'S&P 500', value: '6,082.45', change: '+1.24% (+74.68)', up: true },
+          { name: 'NASDAQ', value: '19,845.32', change: '+1.67% (+325.42)', up: true },
+          { name: 'DOW JONES', value: '44,287.14', change: '+0.89% (+389.56)', up: true },
+          { name: 'RUSSELL 2000', value: '2,345.67', change: '-0.34% (-8.02)', up: false }
+        ],
+        europe: [
+          { name: 'FTSE 100', value: '8,456.32', change: '+0.67% (+56.23)', up: true },
+          { name: 'DAX', value: '21,234.56', change: '+0.89% (+187.45)', up: true },
+          { name: 'CAC 40', value: '7,892.14', change: '+0.45% (+35.12)', up: true },
+          { name: 'STOXX 600', value: '534.67', change: '-0.23% (-1.23)', up: false }
+        ],
+        asia: [
+          { name: 'NIKKEI 225', value: '39,456.78', change: '+1.23% (+478.23)', up: true },
+          { name: 'HANG SENG', value: '20,123.45', change: '-0.87% (-176.45)', up: false },
+          { name: 'SHANGHAI', value: '3,234.56', change: '+0.34% (+10.98)', up: true },
+          { name: 'KOSPI', value: '2,567.89', change: '+0.56% (+14.32)', up: true }
+        ]
+      };
+
+      const data = marketData[region];
+      marketOverview.innerHTML = data.map(market => `
+        <div class="market-card">
+          <div class="market-card-header">
+            <span class="market-name">${market.name}</span>
+            <div class="market-status${region !== 'us' && region !== 'europe' ? ' closed' : ''}"></div>
+          </div>
+          <div class="market-value">${market.value}</div>
+          <div class="market-change ${market.up ? 'up' : 'down'}">${market.change}</div>
+        </div>
+      `).join('');
+    }
+  </script>
+</body>
+</html>

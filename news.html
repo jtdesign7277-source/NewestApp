@@ -1,0 +1,2317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>AI News | ApeHub</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: #0a0a0f;
+      min-height: 100vh;
+      font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Instrument Sans', sans-serif;
+      color: #fff;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .container {
+      max-width: 500px;
+      margin: 0 auto;
+      padding: 0;
+      padding-bottom: calc(100px + env(safe-area-inset-bottom));
+    }
+
+    /* Top Bar */
+    .top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 16px 24px;
+      padding-top: calc(16px + env(safe-area-inset-top));
+    }
+
+    .page-title {
+      font-size: 28px;
+      font-weight: 700;
+      color: #fff;
+    }
+
+    .page-title span {
+      color: #a855f7;
+    }
+
+    .ai-badge {
+      background: linear-gradient(135deg, #a855f7, #6366f1);
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    /* Last Updated */
+    .last-updated {
+      padding: 0 24px;
+      margin-bottom: 20px;
+      font-size: 12px;
+      color: rgba(255, 255, 255, 0.4);
+    }
+
+    .last-updated span {
+      color: #00d775;
+    }
+
+    /* Category Tabs */
+    .category-tabs {
+      display: flex;
+      justify-content: center;
+      gap: 6px;
+      padding: 0 12px;
+      margin-bottom: 24px;
+    }
+
+    .category-tab {
+      padding: 10px 12px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 500;
+      color: rgba(255, 255, 255, 0.6);
+      white-space: nowrap;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .category-tab.active {
+      background: #a855f7;
+      border-color: #a855f7;
+      color: #fff;
+    }
+
+    /* News Cards */
+    .news-section {
+      padding: 0 24px;
+    }
+
+    .news-card {
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: 16px;
+      padding: 20px;
+      margin-bottom: 16px;
+      transition: all 0.2s;
+    }
+
+    .news-card:active {
+      transform: scale(0.98);
+      background: rgba(255, 255, 255, 0.04);
+    }
+
+    .news-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 12px;
+    }
+
+    .news-source {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .source-icon {
+      width: 24px;
+      height: 24px;
+      background: linear-gradient(135deg, #a855f7, #6366f1);
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .source-name {
+      font-size: 12px;
+      color: rgba(255, 255, 255, 0.5);
+      font-weight: 500;
+    }
+
+    .news-time {
+      font-size: 11px;
+      color: rgba(255, 255, 255, 0.3);
+    }
+
+    .news-title {
+      font-size: 17px;
+      font-weight: 600;
+      line-height: 1.4;
+      margin-bottom: 10px;
+      color: #fff;
+    }
+
+    .news-summary {
+      font-size: 14px;
+      line-height: 1.5;
+      color: rgba(255, 255, 255, 0.5);
+      margin-bottom: 16px;
+    }
+
+    .news-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+
+    .news-tag {
+      padding: 4px 10px;
+      background: rgba(168, 85, 247, 0.1);
+      border-radius: 12px;
+      font-size: 11px;
+      color: #a855f7;
+      font-weight: 500;
+    }
+
+    .news-tag.bullish {
+      background: rgba(0, 215, 117, 0.1);
+      color: #00d775;
+    }
+
+    .news-tag.bearish {
+      background: rgba(255, 71, 87, 0.1);
+      color: #ff4757;
+    }
+
+    .news-stocks {
+      display: flex;
+      gap: 12px;
+      padding-top: 16px;
+      border-top: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .news-stock {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .news-stock-symbol {
+      font-size: 13px;
+      font-weight: 600;
+      color: #fff;
+    }
+
+    .news-stock-change {
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .news-stock-change.up {
+      color: #00d775;
+    }
+
+    .news-stock-change.down {
+      color: #ff4757;
+    }
+
+    /* Earnings Section */
+    .earnings-section {
+      display: none;
+      padding: 0 24px;
+    }
+
+    .earnings-section.active {
+      display: block;
+    }
+
+    .earnings-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .earnings-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: #fff;
+    }
+
+    .earnings-badge {
+      font-size: 11px;
+      font-weight: 600;
+      color: #a855f7;
+      text-transform: uppercase;
+    }
+
+    .earnings-card {
+      background: transparent;
+      border: none;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: 0;
+      padding: 16px 0;
+      margin-bottom: 0;
+    }
+
+    .earnings-card:last-child {
+      border-bottom: none;
+    }
+
+    .earnings-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 14px;
+    }
+
+    .earnings-company {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .earnings-symbol {
+      font-size: 17px;
+      font-weight: 700;
+      color: #fff;
+    }
+
+    .earnings-name {
+      font-size: 13px;
+      color: rgba(255, 255, 255, 0.4);
+    }
+
+    .earnings-result {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .earnings-result-badge {
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: 600;
+    }
+
+    .earnings-result-badge.beat {
+      background: rgba(0, 215, 117, 0.12);
+      color: #00d775;
+    }
+
+    .earnings-result-badge.miss {
+      background: rgba(255, 71, 87, 0.12);
+      color: #ff4757;
+    }
+
+    .earnings-result-badge.inline {
+      background: rgba(255, 193, 7, 0.12);
+      color: #ffc107;
+    }
+
+    .earnings-date {
+      font-size: 12px;
+      color: rgba(255, 255, 255, 0.3);
+    }
+
+    .earnings-data {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0;
+      margin-bottom: 0;
+    }
+
+    .earnings-data + .earnings-data {
+      margin-top: 10px;
+    }
+
+    .earnings-metric {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+
+    .earnings-metric-label {
+      font-size: 10px;
+      color: rgba(255, 255, 255, 0.35);
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+    }
+
+    .earnings-metric-value {
+      font-size: 15px;
+      font-weight: 600;
+      color: rgba(255, 255, 255, 0.8);
+    }
+
+    .earnings-metric-value.up {
+      color: #00d775;
+    }
+
+    .earnings-metric-value.down {
+      color: #ff4757;
+    }
+
+    .earnings-stock-move {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-top: 14px;
+      margin-top: 14px;
+      border-top: none;
+    }
+
+    .earnings-stock-label {
+      font-size: 12px;
+      color: rgba(255, 255, 255, 0.4);
+    }
+
+    .earnings-stock-change {
+      font-size: 16px;
+      font-weight: 700;
+    }
+
+    .earnings-stock-change.up {
+      color: #00d775;
+    }
+
+    .earnings-stock-change.down {
+      color: #ff4757;
+    }
+
+    /* Crypto Section */
+    .crypto-section {
+      display: none;
+      padding: 0 24px;
+    }
+
+    .crypto-section.active {
+      display: block;
+    }
+
+    .crypto-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .crypto-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: #fff;
+    }
+
+    .crypto-badge {
+      font-size: 11px;
+      font-weight: 600;
+      color: #f7931a;
+      text-transform: uppercase;
+    }
+
+    .crypto-prices {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 24px;
+      overflow-x: auto;
+      padding-bottom: 4px;
+    }
+
+    .crypto-prices::-webkit-scrollbar {
+      display: none;
+    }
+
+    .crypto-price-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(247, 147, 26, 0.08);
+      padding: 10px 14px;
+      border-radius: 10px;
+      white-space: nowrap;
+    }
+
+    .crypto-icon {
+      font-size: 16px;
+      color: #f7931a;
+    }
+
+    .crypto-ticker {
+      font-size: 13px;
+      font-weight: 700;
+      color: #fff;
+    }
+
+    .crypto-value {
+      font-size: 13px;
+      font-weight: 600;
+      color: rgba(255, 255, 255, 0.7);
+    }
+
+    .crypto-pct {
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .crypto-pct.up {
+      color: #00d775;
+    }
+
+    .crypto-pct.down {
+      color: #ff4757;
+    }
+
+    .crypto-article {
+      padding: 16px 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    }
+
+    .crypto-article:last-child {
+      border-bottom: none;
+    }
+
+    .crypto-article-time {
+      font-size: 11px;
+      color: rgba(255, 255, 255, 0.35);
+      margin-bottom: 8px;
+    }
+
+    .crypto-article-title {
+      font-size: 15px;
+      font-weight: 600;
+      color: #fff;
+      line-height: 1.4;
+      margin-bottom: 8px;
+    }
+
+    .crypto-article-summary {
+      font-size: 13px;
+      color: rgba(255, 255, 255, 0.5);
+      line-height: 1.5;
+      margin-bottom: 12px;
+    }
+
+    .crypto-article-tags {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .crypto-tag {
+      font-size: 11px;
+      font-weight: 600;
+      color: #f7931a;
+      background: rgba(247, 147, 26, 0.1);
+      padding: 4px 10px;
+      border-radius: 6px;
+    }
+
+    .crypto-sentiment {
+      font-size: 11px;
+      font-weight: 600;
+      padding: 4px 10px;
+      border-radius: 6px;
+    }
+
+    .crypto-sentiment.bullish {
+      background: rgba(0, 215, 117, 0.1);
+      color: #00d775;
+    }
+
+    .crypto-sentiment.bearish {
+      background: rgba(255, 71, 87, 0.1);
+      color: #ff4757;
+    }
+
+    .crypto-sentiment.neutral {
+      background: rgba(255, 255, 255, 0.08);
+      color: rgba(255, 255, 255, 0.5);
+    }
+
+    /* Breaking News Section */
+    .breaking-section {
+      display: none;
+      padding: 0 24px;
+    }
+
+    .breaking-section.active {
+      display: block;
+    }
+
+    .breaking-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .breaking-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: #fff;
+    }
+
+    .breaking-live {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      font-weight: 600;
+      color: #ff4757;
+      text-transform: uppercase;
+    }
+
+    .breaking-live::before {
+      content: '';
+      width: 8px;
+      height: 8px;
+      background: #ff4757;
+      border-radius: 50%;
+      animation: pulse-red 1.5s infinite;
+    }
+
+    @keyframes pulse-red {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.4; }
+    }
+
+    .breaking-alert {
+      background: linear-gradient(135deg, rgba(255, 71, 87, 0.12), rgba(255, 71, 87, 0.05));
+      border-left: 3px solid #ff4757;
+      padding: 14px 16px;
+      margin-bottom: 20px;
+      border-radius: 0 10px 10px 0;
+    }
+
+    .breaking-alert-label {
+      font-size: 10px;
+      font-weight: 700;
+      color: #ff4757;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 6px;
+    }
+
+    .breaking-alert-text {
+      font-size: 14px;
+      font-weight: 600;
+      color: #fff;
+      line-height: 1.4;
+    }
+
+    .breaking-article {
+      padding: 16px 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    }
+
+    .breaking-article:last-child {
+      border-bottom: none;
+    }
+
+    .breaking-article-meta {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 8px;
+    }
+
+    .breaking-article-time {
+      font-size: 11px;
+      color: rgba(255, 255, 255, 0.35);
+    }
+
+    .breaking-urgent {
+      font-size: 9px;
+      font-weight: 700;
+      color: #ff4757;
+      background: rgba(255, 71, 87, 0.15);
+      padding: 3px 8px;
+      border-radius: 4px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .breaking-article-title {
+      font-size: 15px;
+      font-weight: 600;
+      color: #fff;
+      line-height: 1.4;
+      margin-bottom: 8px;
+    }
+
+    .breaking-article-summary {
+      font-size: 13px;
+      color: rgba(255, 255, 255, 0.5);
+      line-height: 1.5;
+      margin-bottom: 12px;
+    }
+
+    .breaking-article-stocks {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .breaking-stock {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .breaking-stock-symbol {
+      font-size: 12px;
+      font-weight: 700;
+      color: #fff;
+    }
+
+    .breaking-stock-change {
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .breaking-stock-change.up {
+      color: #00d775;
+    }
+
+    .breaking-stock-change.down {
+      color: #ff4757;
+    }
+
+    /* Fed & Economy Section */
+    .fed-section {
+      display: none;
+      padding: 0 24px;
+    }
+
+    .fed-section.active {
+      display: block;
+    }
+
+    .fed-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .fed-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: #fff;
+    }
+
+    .fed-badge {
+      font-size: 11px;
+      font-weight: 600;
+      color: #3b82f6;
+      text-transform: uppercase;
+    }
+
+    .fed-rates {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-bottom: 24px;
+    }
+
+    .fed-rate-item {
+      background: rgba(59, 130, 246, 0.08);
+      padding: 12px;
+      border-radius: 10px;
+      text-align: center;
+    }
+
+    .fed-rate-label {
+      font-size: 10px;
+      color: rgba(255, 255, 255, 0.4);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 6px;
+    }
+
+    .fed-rate-value {
+      font-size: 18px;
+      font-weight: 700;
+      color: #3b82f6;
+    }
+
+    .fed-rate-change {
+      font-size: 11px;
+      margin-top: 4px;
+    }
+
+    .fed-rate-change.up {
+      color: #ff4757;
+    }
+
+    .fed-rate-change.down {
+      color: #00d775;
+    }
+
+    .fed-rate-change.neutral {
+      color: rgba(255, 255, 255, 0.4);
+    }
+
+    .fed-article {
+      padding: 16px 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    }
+
+    .fed-article:last-child {
+      border-bottom: none;
+    }
+
+    .fed-article-meta {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 8px;
+    }
+
+    .fed-article-time {
+      font-size: 11px;
+      color: rgba(255, 255, 255, 0.35);
+    }
+
+    .fed-source {
+      font-size: 10px;
+      font-weight: 600;
+      color: #3b82f6;
+      background: rgba(59, 130, 246, 0.12);
+      padding: 3px 8px;
+      border-radius: 4px;
+    }
+
+    .fed-article-title {
+      font-size: 15px;
+      font-weight: 600;
+      color: #fff;
+      line-height: 1.4;
+      margin-bottom: 8px;
+    }
+
+    .fed-article-summary {
+      font-size: 13px;
+      color: rgba(255, 255, 255, 0.5);
+      line-height: 1.5;
+      margin-bottom: 12px;
+    }
+
+    .fed-article-impact {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .fed-impact-label {
+      font-size: 11px;
+      color: rgba(255, 255, 255, 0.4);
+    }
+
+    .fed-impact-badge {
+      font-size: 11px;
+      font-weight: 600;
+      padding: 4px 10px;
+      border-radius: 6px;
+    }
+
+    .fed-impact-badge.bullish {
+      background: rgba(0, 215, 117, 0.1);
+      color: #00d775;
+    }
+
+    .fed-impact-badge.bearish {
+      background: rgba(255, 71, 87, 0.1);
+      color: #ff4757;
+    }
+
+    .fed-impact-badge.neutral {
+      background: rgba(255, 255, 255, 0.08);
+      color: rgba(255, 255, 255, 0.5);
+    }
+
+    /* Tech Section */
+    .tech-section {
+      display: none;
+      padding: 0 24px;
+    }
+
+    .tech-section.active {
+      display: block;
+    }
+
+    .tech-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .tech-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: #fff;
+    }
+
+    .tech-badge {
+      font-size: 11px;
+      font-weight: 600;
+      color: #8b5cf6;
+      text-transform: uppercase;
+    }
+
+    .tech-movers {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 24px;
+      overflow-x: auto;
+      padding-bottom: 4px;
+    }
+
+    .tech-movers::-webkit-scrollbar {
+      display: none;
+    }
+
+    .tech-mover {
+      flex-shrink: 0;
+      background: rgba(139, 92, 246, 0.08);
+      padding: 12px 16px;
+      border-radius: 12px;
+      text-align: center;
+      min-width: 90px;
+    }
+
+    .tech-mover-symbol {
+      font-size: 14px;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 4px;
+    }
+
+    .tech-mover-change {
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .tech-mover-change.up {
+      color: #00d775;
+    }
+
+    .tech-mover-change.down {
+      color: #ff4757;
+    }
+
+    .tech-article {
+      padding: 16px 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    }
+
+    .tech-article:last-child {
+      border-bottom: none;
+    }
+
+    .tech-article-meta {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 8px;
+    }
+
+    .tech-article-time {
+      font-size: 11px;
+      color: rgba(255, 255, 255, 0.35);
+    }
+
+    .tech-category {
+      font-size: 10px;
+      font-weight: 600;
+      color: #8b5cf6;
+      background: rgba(139, 92, 246, 0.12);
+      padding: 3px 8px;
+      border-radius: 4px;
+    }
+
+    .tech-article-title {
+      font-size: 15px;
+      font-weight: 600;
+      color: #fff;
+      line-height: 1.4;
+      margin-bottom: 8px;
+    }
+
+    .tech-article-summary {
+      font-size: 13px;
+      color: rgba(255, 255, 255, 0.5);
+      line-height: 1.5;
+      margin-bottom: 12px;
+    }
+
+    .tech-article-stocks {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .tech-stock {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .tech-stock-symbol {
+      font-size: 12px;
+      font-weight: 700;
+      color: #fff;
+    }
+
+    .tech-stock-change {
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .tech-stock-change.up {
+      color: #00d775;
+    }
+
+    .tech-stock-change.down {
+      color: #ff4757;
+    }
+
+    /* Featured Article */
+    .featured-card {
+      background: linear-gradient(135deg, rgba(168, 85, 247, 0.15), rgba(99, 102, 241, 0.1));
+      border: 1px solid rgba(168, 85, 247, 0.3);
+    }
+
+    .featured-label {
+      display: inline-block;
+      background: linear-gradient(135deg, #a855f7, #6366f1);
+      padding: 4px 10px;
+      border-radius: 12px;
+      font-size: 10px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 12px;
+    }
+
+    /* Bottom Nav */
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: #0a0a0f;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      display: flex;
+      justify-content: space-around;
+      padding: 12px 0;
+      padding-bottom: calc(12px + env(safe-area-inset-bottom));
+      max-width: 500px;
+      margin: 0 auto;
+    }
+
+    .nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      text-decoration: none;
+      color: rgba(255, 255, 255, 0.4);
+      transition: all 0.2s;
+    }
+
+    .nav-item.active {
+      color: #a855f7;
+    }
+
+    .nav-item svg {
+      width: 24px;
+      height: 24px;
+    }
+
+    .nav-item span {
+      font-size: 11px;
+      font-weight: 500;
+    }
+
+    /* AI Insight Box */
+    .ai-insight {
+      margin: 0 24px 24px;
+      padding: 16px;
+      background: linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(168, 85, 247, 0.05));
+      border: 1px solid rgba(99, 102, 241, 0.2);
+      border-radius: 12px;
+    }
+
+    .ai-insight-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+
+    .ai-insight-icon {
+      width: 20px;
+      height: 20px;
+      background: linear-gradient(135deg, #6366f1, #a855f7);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .ai-insight-icon svg {
+      width: 12px;
+      height: 12px;
+      color: #fff;
+    }
+
+    .ai-insight-label {
+      font-size: 12px;
+      font-weight: 600;
+      color: #6366f1;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .ai-insight-text {
+      font-size: 14px;
+      line-height: 1.5;
+      color: rgba(255, 255, 255, 0.7);
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="top-bar">
+      <h1 class="page-title">AI <span>News</span></h1>
+    </div>
+
+    <div class="last-updated">
+      Last updated: <span id="update-time">Just now</span> • Powered by AI
+    </div>
+
+    <!-- AI Market Insight -->
+    <div class="ai-insight">
+      <div class="ai-insight-header">
+        <div class="ai-insight-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 2a4 4 0 0 1 4 4v1h2a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2h2V6a4 4 0 0 1 4-4z"/>
+          </svg>
+        </div>
+        <span class="ai-insight-label">AI Market Summary</span>
+      </div>
+      <p class="ai-insight-text" id="market-summary">Markets are showing mixed signals today with tech leading gains while energy pulls back. Key focus remains on upcoming Fed meeting and earnings season. Volatility expected to remain elevated.</p>
+    </div>
+
+    <!-- Category Tabs -->
+    <div class="category-tabs">
+      <div class="category-tab active" data-category="breaking">Breaking</div>
+      <div class="category-tab" data-category="earnings">Earnings</div>
+      <div class="category-tab" data-category="fed">Fed & Economy</div>
+      <div class="category-tab" data-category="tech">Tech</div>
+      <div class="category-tab" data-category="crypto">Crypto</div>
+    </div>
+
+    <!-- Breaking News Section -->
+    <div class="breaking-section active" id="breaking-container">
+      <div class="breaking-header">
+        <h2 class="breaking-title">⚡ Breaking News</h2>
+        <span class="breaking-live">Live</span>
+      </div>
+
+      <!-- Breaking Alert -->
+      <div class="breaking-alert">
+        <div class="breaking-alert-label">Just In</div>
+        <div class="breaking-alert-text">Fed Chair Powell signals potential rate cuts in Q2 as inflation approaches 2% target</div>
+      </div>
+
+      <div class="breaking-article">
+        <div class="breaking-article-meta">
+          <span class="breaking-article-time">2 min ago</span>
+          <span class="breaking-urgent">Urgent</span>
+        </div>
+        <h3 class="breaking-article-title">S&P 500 Hits All-Time High, Crosses 6,100 for First Time</h3>
+        <p class="breaking-article-summary">Major indices surge as investors react positively to latest economic data showing strong GDP growth and cooling inflation.</p>
+        <div class="breaking-article-stocks">
+          <div class="breaking-stock">
+            <span class="breaking-stock-symbol">SPY</span>
+            <span class="breaking-stock-change up">+1.42%</span>
+          </div>
+          <div class="breaking-stock">
+            <span class="breaking-stock-symbol">QQQ</span>
+            <span class="breaking-stock-change up">+1.87%</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="breaking-article">
+        <div class="breaking-article-meta">
+          <span class="breaking-article-time">8 min ago</span>
+          <span class="breaking-urgent">Urgent</span>
+        </div>
+        <h3 class="breaking-article-title">NVIDIA Announces Blackwell Ultra GPU, Stock Surges 5%</h3>
+        <p class="breaking-article-summary">Next-generation AI chip promises 4x performance improvement. Major cloud providers announce immediate adoption plans.</p>
+        <div class="breaking-article-stocks">
+          <div class="breaking-stock">
+            <span class="breaking-stock-symbol">NVDA</span>
+            <span class="breaking-stock-change up">+4.89%</span>
+          </div>
+          <div class="breaking-stock">
+            <span class="breaking-stock-symbol">AMD</span>
+            <span class="breaking-stock-change up">+2.34%</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="breaking-article">
+        <div class="breaking-article-meta">
+          <span class="breaking-article-time">15 min ago</span>
+        </div>
+        <h3 class="breaking-article-title">Apple Confirms $10B Investment in US Manufacturing</h3>
+        <p class="breaking-article-summary">Tim Cook announces new chip fabrication facility in Arizona, creating 15,000 jobs. Production to begin in 2027.</p>
+        <div class="breaking-article-stocks">
+          <div class="breaking-stock">
+            <span class="breaking-stock-symbol">AAPL</span>
+            <span class="breaking-stock-change up">+2.12%</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="breaking-article">
+        <div class="breaking-article-meta">
+          <span class="breaking-article-time">28 min ago</span>
+        </div>
+        <h3 class="breaking-article-title">Tesla Cybertruck Deliveries Exceed 100,000 Units</h3>
+        <p class="breaking-article-summary">Production ramp faster than expected. Elon Musk confirms 250,000 unit target for 2026 is on track.</p>
+        <div class="breaking-article-stocks">
+          <div class="breaking-stock">
+            <span class="breaking-stock-symbol">TSLA</span>
+            <span class="breaking-stock-change up">+3.45%</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="breaking-article">
+        <div class="breaking-article-meta">
+          <span class="breaking-article-time">42 min ago</span>
+        </div>
+        <h3 class="breaking-article-title">Oil Prices Drop 4% on OPEC+ Production Increase Announcement</h3>
+        <p class="breaking-article-summary">Crude falls to $68/barrel as Saudi Arabia signals willingness to boost output. Energy stocks tumble.</p>
+        <div class="breaking-article-stocks">
+          <div class="breaking-stock">
+            <span class="breaking-stock-symbol">XOM</span>
+            <span class="breaking-stock-change down">-2.87%</span>
+          </div>
+          <div class="breaking-stock">
+            <span class="breaking-stock-symbol">CVX</span>
+            <span class="breaking-stock-change down">-2.45%</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="breaking-article">
+        <div class="breaking-article-meta">
+          <span class="breaking-article-time">1 hr ago</span>
+        </div>
+        <h3 class="breaking-article-title">Microsoft Azure AI Revenue Doubles, Cloud Growth Accelerates</h3>
+        <p class="breaking-article-summary">CEO Satya Nadella reports AI services now account for 15% of total cloud revenue. Enterprise demand surging.</p>
+        <div class="breaking-article-stocks">
+          <div class="breaking-stock">
+            <span class="breaking-stock-symbol">MSFT</span>
+            <span class="breaking-stock-change up">+1.78%</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="breaking-article">
+        <div class="breaking-article-meta">
+          <span class="breaking-article-time">1 hr ago</span>
+        </div>
+        <h3 class="breaking-article-title">Amazon Announces Same-Day Drone Delivery in 50 Cities</h3>
+        <p class="breaking-article-summary">Prime Air expansion marks largest drone delivery rollout in history. Service begins next month.</p>
+        <div class="breaking-article-stocks">
+          <div class="breaking-stock">
+            <span class="breaking-stock-symbol">AMZN</span>
+            <span class="breaking-stock-change up">+1.56%</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="breaking-article">
+        <div class="breaking-article-meta">
+          <span class="breaking-article-time">2 hr ago</span>
+        </div>
+        <h3 class="breaking-article-title">Boeing 737 MAX Returns to Full Service After Safety Review</h3>
+        <p class="breaking-article-summary">FAA clears aircraft following comprehensive inspection program. Airlines resume normal operations.</p>
+        <div class="breaking-article-stocks">
+          <div class="breaking-stock">
+            <span class="breaking-stock-symbol">BA</span>
+            <span class="breaking-stock-change up">+4.23%</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tech Section -->
+    <div class="tech-section" id="tech-container">
+      <div class="tech-header">
+        <h2 class="tech-title">💻 Tech & Innovation</h2>
+        <span class="tech-badge">Trending</span>
+      </div>
+
+      <!-- Tech Movers -->
+      <div class="tech-movers">
+        <div class="tech-mover">
+          <div class="tech-mover-symbol">NVDA</div>
+          <div class="tech-mover-change up">+4.52%</div>
+        </div>
+        <div class="tech-mover">
+          <div class="tech-mover-symbol">PLTR</div>
+          <div class="tech-mover-change up">+6.23%</div>
+        </div>
+        <div class="tech-mover">
+          <div class="tech-mover-symbol">IONQ</div>
+          <div class="tech-mover-change up">+8.45%</div>
+        </div>
+        <div class="tech-mover">
+          <div class="tech-mover-symbol">SMCI</div>
+          <div class="tech-mover-change up">+5.12%</div>
+        </div>
+        <div class="tech-mover">
+          <div class="tech-mover-symbol">INTC</div>
+          <div class="tech-mover-change down">-2.34%</div>
+        </div>
+      </div>
+
+      <div class="tech-article">
+        <div class="tech-article-meta">
+          <span class="tech-article-time">8 min ago</span>
+          <span class="tech-category">AI</span>
+        </div>
+        <h3 class="tech-article-title">OpenAI Launches GPT-5 with Real-Time Video Understanding</h3>
+        <p class="tech-article-summary">Next-generation model can analyze live video feeds, opening new applications in robotics, security, and healthcare diagnostics.</p>
+        <div class="tech-article-stocks">
+          <div class="tech-stock">
+            <span class="tech-stock-symbol">MSFT</span>
+            <span class="tech-stock-change up">+1.45%</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="tech-article">
+        <div class="tech-article-meta">
+          <span class="tech-article-time">22 min ago</span>
+          <span class="tech-category">Quantum</span>
+        </div>
+        <h3 class="tech-article-title">Google Achieves 1,000 Qubit Milestone, Quantum Stocks Surge</h3>
+        <p class="tech-article-summary">Willow quantum processor demonstrates error correction breakthrough. Commercial applications now within 5-year horizon.</p>
+        <div class="tech-article-stocks">
+          <div class="tech-stock">
+            <span class="tech-stock-symbol">GOOGL</span>
+            <span class="tech-stock-change up">+2.67%</span>
+          </div>
+          <div class="tech-stock">
+            <span class="tech-stock-symbol">IONQ</span>
+            <span class="tech-stock-change up">+8.45%</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="tech-article">
+        <div class="tech-article-meta">
+          <span class="tech-article-time">45 min ago</span>
+          <span class="tech-category">Semiconductors</span>
+        </div>
+        <h3 class="tech-article-title">TSMC Begins 2nm Chip Production, Apple First Customer</h3>
+        <p class="tech-article-summary">World's most advanced chip manufacturing process enters mass production. A19 Bionic expected in iPhone 18 this fall.</p>
+        <div class="tech-article-stocks">
+          <div class="tech-stock">
+            <span class="tech-stock-symbol">TSM</span>
+            <span class="tech-stock-change up">+3.21%</span>
+          </div>
+          <div class="tech-stock">
+            <span class="tech-stock-symbol">AAPL</span>
+            <span class="tech-stock-change up">+1.89%</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="tech-article">
+        <div class="tech-article-meta">
+          <span class="tech-article-time">1 hr ago</span>
+          <span class="tech-category">Robotics</span>
+        </div>
+        <h3 class="tech-article-title">Figure AI Humanoid Robot Begins Deployment at BMW Factories</h3>
+        <p class="tech-article-summary">First large-scale deployment of general-purpose humanoid robots. 500 units operational by end of Q1.</p>
+        <div class="tech-article-stocks">
+          <div class="tech-stock">
+            <span class="tech-stock-symbol">NVDA</span>
+            <span class="tech-stock-change up">+4.52%</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="tech-article">
+        <div class="tech-article-meta">
+          <span class="tech-article-time">1 hr ago</span>
+          <span class="tech-category">Cloud</span>
+        </div>
+        <h3 class="tech-article-title">Palantir Wins $890M Defense Contract for AI Platform</h3>
+        <p class="tech-article-summary">Pentagon selects AIP for military decision-making systems. Largest government AI contract to date.</p>
+        <div class="tech-article-stocks">
+          <div class="tech-stock">
+            <span class="tech-stock-symbol">PLTR</span>
+            <span class="tech-stock-change up">+6.23%</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="tech-article">
+        <div class="tech-article-meta">
+          <span class="tech-article-time">2 hr ago</span>
+          <span class="tech-category">AR/VR</span>
+        </div>
+        <h3 class="tech-article-title">Meta Quest 4 Leak Reveals Retinal Resolution Display</h3>
+        <p class="tech-article-summary">Next-gen headset reportedly achieves human eye-level pixel density. Release expected at Connect 2026.</p>
+        <div class="tech-article-stocks">
+          <div class="tech-stock">
+            <span class="tech-stock-symbol">META</span>
+            <span class="tech-stock-change up">+2.12%</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="tech-article">
+        <div class="tech-article-meta">
+          <span class="tech-article-time">3 hr ago</span>
+          <span class="tech-category">AI Infrastructure</span>
+        </div>
+        <h3 class="tech-article-title">Super Micro Secures $2B Order for AI Server Racks</h3>
+        <p class="tech-article-summary">Major hyperscaler places largest order in company history. Liquid cooling systems in high demand.</p>
+        <div class="tech-article-stocks">
+          <div class="tech-stock">
+            <span class="tech-stock-symbol">SMCI</span>
+            <span class="tech-stock-change up">+5.12%</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="tech-article">
+        <div class="tech-article-meta">
+          <span class="tech-article-time">4 hr ago</span>
+          <span class="tech-category">Cybersecurity</span>
+        </div>
+        <h3 class="tech-article-title">CrowdStrike Detects New Nation-State Threat Actor Targeting AI Labs</h3>
+        <p class="tech-article-summary">Sophisticated campaign aims to steal AI model weights. Multiple tech giants issue security patches.</p>
+        <div class="tech-article-stocks">
+          <div class="tech-stock">
+            <span class="tech-stock-symbol">CRWD</span>
+            <span class="tech-stock-change up">+3.45%</span>
+          </div>
+          <div class="tech-stock">
+            <span class="tech-stock-symbol">PANW</span>
+            <span class="tech-stock-change up">+2.89%</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Fed & Economy Section -->
+    <div class="fed-section" id="fed-container">
+      <div class="fed-header">
+        <h2 class="fed-title">🏦 Fed & Economy</h2>
+        <span class="fed-badge">Macro</span>
+      </div>
+
+      <!-- Key Rates -->
+      <div class="fed-rates">
+        <div class="fed-rate-item">
+          <div class="fed-rate-label">Fed Rate</div>
+          <div class="fed-rate-value">4.50%</div>
+          <div class="fed-rate-change neutral">Unchanged</div>
+        </div>
+        <div class="fed-rate-item">
+          <div class="fed-rate-label">10Y Yield</div>
+          <div class="fed-rate-value">4.12%</div>
+          <div class="fed-rate-change down">-0.08%</div>
+        </div>
+        <div class="fed-rate-item">
+          <div class="fed-rate-label">CPI</div>
+          <div class="fed-rate-value">2.4%</div>
+          <div class="fed-rate-change down">-0.2%</div>
+        </div>
+      </div>
+
+      <div class="fed-article">
+        <div class="fed-article-meta">
+          <span class="fed-article-time">12 min ago</span>
+          <span class="fed-source">FOMC</span>
+        </div>
+        <h3 class="fed-article-title">Fed Signals Potential Rate Cuts in Q2 as Inflation Nears Target</h3>
+        <p class="fed-article-summary">Chair Powell indicated the Fed is "increasingly confident" that inflation is on a sustainable path to 2%. Markets pricing in 75bp of cuts by year end.</p>
+        <div class="fed-article-impact">
+          <span class="fed-impact-label">Market Impact:</span>
+          <span class="fed-impact-badge bullish">Bullish for Equities</span>
+        </div>
+      </div>
+
+      <div class="fed-article">
+        <div class="fed-article-meta">
+          <span class="fed-article-time">45 min ago</span>
+          <span class="fed-source">Treasury</span>
+        </div>
+        <h3 class="fed-article-title">10-Year Treasury Yield Falls Below 4.15% on Soft Jobs Data</h3>
+        <p class="fed-article-summary">Bond yields decline as latest employment report shows cooling labor market. Unemployment ticks up to 4.1%.</p>
+        <div class="fed-article-impact">
+          <span class="fed-impact-label">Market Impact:</span>
+          <span class="fed-impact-badge bullish">Bullish for Bonds</span>
+        </div>
+      </div>
+
+      <div class="fed-article">
+        <div class="fed-article-meta">
+          <span class="fed-article-time">1 hr ago</span>
+          <span class="fed-source">BLS</span>
+        </div>
+        <h3 class="fed-article-title">CPI Comes in at 2.4% YoY, Below Expectations</h3>
+        <p class="fed-article-summary">Core inflation excluding food and energy at 2.8%. Shelter costs showing signs of moderation for first time in 18 months.</p>
+        <div class="fed-article-impact">
+          <span class="fed-impact-label">Market Impact:</span>
+          <span class="fed-impact-badge bullish">Bullish for All Assets</span>
+        </div>
+      </div>
+
+      <div class="fed-article">
+        <div class="fed-article-meta">
+          <span class="fed-article-time">2 hr ago</span>
+          <span class="fed-source">Commerce</span>
+        </div>
+        <h3 class="fed-article-title">Q4 GDP Growth Revised Up to 3.4%, Economy Stays Resilient</h3>
+        <p class="fed-article-summary">Consumer spending and business investment drive stronger-than-expected growth. Soft landing narrative gains traction.</p>
+        <div class="fed-article-impact">
+          <span class="fed-impact-label">Market Impact:</span>
+          <span class="fed-impact-badge bullish">Bullish for Growth Stocks</span>
+        </div>
+      </div>
+
+      <div class="fed-article">
+        <div class="fed-article-meta">
+          <span class="fed-article-time">3 hr ago</span>
+          <span class="fed-source">ECB</span>
+        </div>
+        <h3 class="fed-article-title">ECB Cuts Rates by 25bp, Signals More Easing Ahead</h3>
+        <p class="fed-article-summary">European Central Bank lowers deposit rate to 3.0% citing weakening growth. Lagarde hints at further cuts in March.</p>
+        <div class="fed-article-impact">
+          <span class="fed-impact-label">Market Impact:</span>
+          <span class="fed-impact-badge neutral">Mixed for US Markets</span>
+        </div>
+      </div>
+
+      <div class="fed-article">
+        <div class="fed-article-meta">
+          <span class="fed-article-time">4 hr ago</span>
+          <span class="fed-source">Fed</span>
+        </div>
+        <h3 class="fed-article-title">Fed's Waller: "No Rush to Cut Rates Despite Progress"</h3>
+        <p class="fed-article-summary">Fed Governor urges patience, says more data needed before declaring victory on inflation. Suggests May meeting for potential action.</p>
+        <div class="fed-article-impact">
+          <span class="fed-impact-label">Market Impact:</span>
+          <span class="fed-impact-badge neutral">Neutral</span>
+        </div>
+      </div>
+
+      <div class="fed-article">
+        <div class="fed-article-meta">
+          <span class="fed-article-time">5 hr ago</span>
+          <span class="fed-source">Labor</span>
+        </div>
+        <h3 class="fed-article-title">Initial Jobless Claims Rise to 225K, Above Forecast</h3>
+        <p class="fed-article-summary">Weekly unemployment filings increase as tech sector layoffs continue. Four-week moving average remains historically low.</p>
+        <div class="fed-article-impact">
+          <span class="fed-impact-label">Market Impact:</span>
+          <span class="fed-impact-badge bullish">Bullish for Rate Cuts</span>
+        </div>
+      </div>
+
+      <div class="fed-article">
+        <div class="fed-article-meta">
+          <span class="fed-article-time">6 hr ago</span>
+          <span class="fed-source">ISM</span>
+        </div>
+        <h3 class="fed-article-title">Manufacturing PMI Expands for Third Straight Month</h3>
+        <p class="fed-article-summary">ISM Manufacturing Index at 52.4, signaling continued expansion. New orders component hits 12-month high.</p>
+        <div class="fed-article-impact">
+          <span class="fed-impact-label">Market Impact:</span>
+          <span class="fed-impact-badge bullish">Bullish for Industrials</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Earnings Section -->
+    <div class="earnings-section" id="earnings-container">
+      <div class="earnings-header">
+        <h2 class="earnings-title">📊 Latest Earnings</h2>
+        <span class="earnings-badge">Q4 2025</span>
+      </div>
+
+      <div class="earnings-card">
+        <div class="earnings-card-header">
+          <div class="earnings-company">
+            <span class="earnings-symbol">NVDA</span>
+            <span class="earnings-name">NVIDIA Corporation</span>
+          </div>
+          <div class="earnings-result">
+            <span class="earnings-result-badge beat">Beat</span>
+            <span class="earnings-date">Jan 10, 2026</span>
+          </div>
+        </div>
+        <div class="earnings-data">
+          <div class="earnings-metric">
+            <span class="earnings-metric-label">EPS</span>
+            <span class="earnings-metric-value up">$0.89</span>
+          </div>
+          <div class="earnings-metric">
+            <span class="earnings-metric-label">Est.</span>
+            <span class="earnings-metric-value">$0.74</span>
+          </div>
+          <div class="earnings-metric">
+            <span class="earnings-metric-label">Surprise</span>
+            <span class="earnings-metric-value up">+20.3%</span>
+          </div>
+        </div>
+        <div class="earnings-data">
+          <div class="earnings-metric">
+            <span class="earnings-metric-label">Revenue</span>
+            <span class="earnings-metric-value up">$38.5B</span>
+          </div>
+          <div class="earnings-metric">
+            <span class="earnings-metric-label">Est.</span>
+            <span class="earnings-metric-value">$33.2B</span>
+          </div>
+          <div class="earnings-metric">
+            <span class="earnings-metric-label">Surprise</span>
+            <span class="earnings-metric-value up">+16.0%</span>
+          </div>
+        </div>
+        <div class="earnings-stock-move">
+          <span class="earnings-stock-label">After-Hours Move</span>
+          <span class="earnings-stock-change up">+4.52%</span>
+        </div>
+      </div>
+
+      <div class="earnings-card">
+        <div class="earnings-card-header">
+          <div class="earnings-company">
+            <span class="earnings-symbol">AAPL</span>
+            <span class="earnings-name">Apple Inc</span>
+          </div>
+          <div class="earnings-result">
+            <span class="earnings-result-badge beat">Beat</span>
+            <span class="earnings-date">Jan 9, 2026</span>
+          </div>
+        </div>
+        <div class="earnings-data">
+          <div class="earnings-metric">
+            <span class="earnings-metric-label">EPS</span>
+            <span class="earnings-metric-value up">$2.42</span>
+          </div>
+          <div class="earnings-metric">
+            <span class="earnings-metric-label">Est.</span>
+            <span class="earnings-metric-value">$2.35</span>
+          </div>
+          <div class="earnings-metric">
+            <span class="earnings-metric-label">Surprise</span>
+            <span class="earnings-metric-value up">+3.0%</span>
+          </div>
+        </div>
+        <div class="earnings-data">
+          <div class="earnings-metric">
+            <span class="earnings-metric-label">Revenue</span>
+            <span class="earnings-metric-value up">$124.3B</span>
+          </div>
+          <div class="earnings-metric">
+            <span class="earnings-metric-label">Est.</span>
+            <span class="earnings-metric-value">$121.1B</span>
+          </div>
+          <div class="earnings-metric">
+            <span class="earnings-metric-label">Surprise</span>
+            <span class="earnings-metric-value up">+2.6%</span>
+          </div>
+        </div>
+        <div class="earnings-stock-move">
+          <span class="earnings-stock-label">After-Hours Move</span>
+          <span class="earnings-stock-change up">+2.34%</span>
+        </div>
+      </div>
+
+      <div class="earnings-card">
+        <div class="earnings-card-header">
+          <div class="earnings-company">
+            <span class="earnings-symbol">MSFT</span>
+            <span class="earnings-name">Microsoft Corporation</span>
+          </div>
+          <div class="earnings-result">
+            <span class="earnings-result-badge beat">Beat</span>
+            <span class="earnings-date">Jan 8, 2026</span>
+          </div>
+        </div>
+        <div class="earnings-data">
+          <div class="earnings-metric">
+            <span class="earnings-metric-label">EPS</span>
+            <span class="earnings-metric-value up">$3.12</span>
+          </div>
+          <div class="earnings-metric">
+            <span class="earnings-metric-label">Est.</span>
+            <span class="earnings-metric-value">$2.95</span>
+          </div>
+          <div class="earnings-metric">
+            <span class="earnings-metric-label">Surprise</span>
+            <span class="earnings-metric-value up">+5.8%</span>
+          </div>
+        </div>
+        <div class="earnings-data">
+          <div class="earnings-metric">
+            <span class="earnings-metric-label">Revenue</span>
+            <span class="earnings-metric-value up">$68.7B</span>
+          </div>
+          <div class="earnings-metric">
+            <span class="earnings-metric-label">Est.</span>
+            <span class="earnings-metric-value">$65.8B</span>
+          </div>
+          <div class="earnings-metric">
+            <span class="earnings-metric-label">Surprise</span>
+            <span class="earnings-metric-value up">+4.4%</span>
+          </div>
+        </div>
+        <div class="earnings-stock-move">
+          <span class="earnings-stock-label">After-Hours Move</span>
+          <span class="earnings-stock-change up">+1.89%</span>
+        </div>
+      </div>
+
+      <div class="earnings-card">
+        <div class="earnings-card-header">
+          <div class="earnings-company">
+            <span class="earnings-symbol">TSLA</span>
+            <span class="earnings-name">Tesla Inc</span>
+          </div>
+          <div class="earnings-result">
+            <span class="earnings-result-badge beat">Beat</span>
+            <span class="earnings-date">Jan 7, 2026</span>
+          </div>
+        </div>
+        <div class="earnings-data">
+          <div class="earnings-metric">
+            <span class="earnings-metric-label">EPS</span>
+            <span class="earnings-metric-value up">$0.78</span>
+          </div>
+          <div class="earnings-metric">
+            <span class="earnings-metric-label">Est.</span>
+            <span class="earnings-metric-value">$0.71</span>
+          </div>
+          <div class="earnings-metric">
+            <span class="earnings-metric-label">Surprise</span>
+            <span class="earnings-metric-value up">+9.9%</span>
+          </div>
+        </div>
+        <div class="earnings-data">
+          <div class="earnings-metric">
+            <span class="earnings-metric-label">Revenue</span>
+            <span class="earnings-metric-value up">$27.8B</span>
+          </div>
+          <div class="earnings-metric">
+            <span class="earnings-metric-label">Est.</span>
+            <span class="earnings-metric-value">$26.5B</span>
+          </div>
+          <div class="earnings-metric">
+            <span class="earnings-metric-label">Surprise</span>
+            <span class="earnings-metric-value up">+4.9%</span>
+          </div>
+        </div>
+        <div class="earnings-stock-move">
+          <span class="earnings-stock-label">After-Hours Move</span>
+          <span class="earnings-stock-change up">+3.87%</span>
+        </div>
+      </div>
+
+      <div class="earnings-card">
+        <div class="earnings-card-header">
+          <div class="earnings-company">
+            <span class="earnings-symbol">META</span>
+            <span class="earnings-name">Meta Platforms Inc</span>
+          </div>
+          <div class="earnings-result">
+            <span class="earnings-result-badge beat">Beat</span>
+            <span class="earnings-date">Jan 6, 2026</span>
+          </div>
+        </div>
+        <div class="earnings-data">
+          <div class="earnings-metric">
+            <span class="earnings-metric-label">EPS</span>
+            <span class="earnings-metric-value up">$6.45</span>
+          </div>
+          <div class="earnings-metric">
+            <span class="earnings-metric-label">Est.</span>
+            <span class="earnings-metric-value">$5.89</span>
+          </div>
+          <div class="earnings-metric">
+            <span class="earnings-metric-label">Surprise</span>
+            <span class="earnings-metric-value up">+9.5%</span>
+          </div>
+        </div>
+        <div class="earnings-data">
+          <div class="earnings-metric">
+            <span class="earnings-metric-label">Revenue</span>
+            <span class="earnings-metric-value up">$45.2B</span>
+          </div>
+          <div class="earnings-metric">
+            <span class="earnings-metric-label">Est.</span>
+            <span class="earnings-metric-value">$42.8B</span>
+          </div>
+          <div class="earnings-metric">
+            <span class="earnings-metric-label">Surprise</span>
+            <span class="earnings-metric-value up">+5.6%</span>
+          </div>
+        </div>
+        <div class="earnings-stock-move">
+          <span class="earnings-stock-label">After-Hours Move</span>
+          <span class="earnings-stock-change up">+5.23%</span>
+        </div>
+      </div>
+
+      <div class="earnings-card">
+        <div class="earnings-card-header">
+          <div class="earnings-company">
+            <span class="earnings-symbol">AMZN</span>
+            <span class="earnings-name">Amazon.com Inc</span>
+          </div>
+          <div class="earnings-result">
+            <span class="earnings-result-badge inline">In-Line</span>
+            <span class="earnings-date">Jan 5, 2026</span>
+          </div>
+        </div>
+        <div class="earnings-data">
+          <div class="earnings-metric">
+            <span class="earnings-metric-label">EPS</span>
+            <span class="earnings-metric-value">$1.48</span>
+          </div>
+          <div class="earnings-metric">
+            <span class="earnings-metric-label">Est.</span>
+            <span class="earnings-metric-value">$1.47</span>
+          </div>
+          <div class="earnings-metric">
+            <span class="earnings-metric-label">Surprise</span>
+            <span class="earnings-metric-value">+0.7%</span>
+          </div>
+        </div>
+        <div class="earnings-data">
+          <div class="earnings-metric">
+            <span class="earnings-metric-label">Revenue</span>
+            <span class="earnings-metric-value up">$178.4B</span>
+          </div>
+          <div class="earnings-metric">
+            <span class="earnings-metric-label">Est.</span>
+            <span class="earnings-metric-value">$175.6B</span>
+          </div>
+          <div class="earnings-metric">
+            <span class="earnings-metric-label">Surprise</span>
+            <span class="earnings-metric-value up">+1.6%</span>
+          </div>
+        </div>
+        <div class="earnings-stock-move">
+          <span class="earnings-stock-label">After-Hours Move</span>
+          <span class="earnings-stock-change up">+1.45%</span>
+        </div>
+      </div>
+
+      <div class="earnings-card">
+        <div class="earnings-card-header">
+          <div class="earnings-company">
+            <span class="earnings-symbol">INTC</span>
+            <span class="earnings-name">Intel Corporation</span>
+          </div>
+          <div class="earnings-result">
+            <span class="earnings-result-badge miss">Miss</span>
+            <span class="earnings-date">Jan 4, 2026</span>
+          </div>
+        </div>
+        <div class="earnings-data">
+          <div class="earnings-metric">
+            <span class="earnings-metric-label">EPS</span>
+            <span class="earnings-metric-value down">$0.12</span>
+          </div>
+          <div class="earnings-metric">
+            <span class="earnings-metric-label">Est.</span>
+            <span class="earnings-metric-value">$0.21</span>
+          </div>
+          <div class="earnings-metric">
+            <span class="earnings-metric-label">Surprise</span>
+            <span class="earnings-metric-value down">-42.9%</span>
+          </div>
+        </div>
+        <div class="earnings-data">
+          <div class="earnings-metric">
+            <span class="earnings-metric-label">Revenue</span>
+            <span class="earnings-metric-value down">$12.7B</span>
+          </div>
+          <div class="earnings-metric">
+            <span class="earnings-metric-label">Est.</span>
+            <span class="earnings-metric-value">$13.5B</span>
+          </div>
+          <div class="earnings-metric">
+            <span class="earnings-metric-label">Surprise</span>
+            <span class="earnings-metric-value down">-5.9%</span>
+          </div>
+        </div>
+        <div class="earnings-stock-move">
+          <span class="earnings-stock-label">After-Hours Move</span>
+          <span class="earnings-stock-change down">-4.56%</span>
+        </div>
+      </div>
+
+      <div class="earnings-card">
+        <div class="earnings-card-header">
+          <div class="earnings-company">
+            <span class="earnings-symbol">GOOGL</span>
+            <span class="earnings-name">Alphabet Inc</span>
+          </div>
+          <div class="earnings-result">
+            <span class="earnings-result-badge beat">Beat</span>
+            <span class="earnings-date">Jan 3, 2026</span>
+          </div>
+        </div>
+        <div class="earnings-data">
+          <div class="earnings-metric">
+            <span class="earnings-metric-label">EPS</span>
+            <span class="earnings-metric-value up">$2.18</span>
+          </div>
+          <div class="earnings-metric">
+            <span class="earnings-metric-label">Est.</span>
+            <span class="earnings-metric-value">$2.01</span>
+          </div>
+          <div class="earnings-metric">
+            <span class="earnings-metric-label">Surprise</span>
+            <span class="earnings-metric-value up">+8.5%</span>
+          </div>
+        </div>
+        <div class="earnings-data">
+          <div class="earnings-metric">
+            <span class="earnings-metric-label">Revenue</span>
+            <span class="earnings-metric-value up">$94.6B</span>
+          </div>
+          <div class="earnings-metric">
+            <span class="earnings-metric-label">Est.</span>
+            <span class="earnings-metric-value">$91.2B</span>
+          </div>
+          <div class="earnings-metric">
+            <span class="earnings-metric-label">Surprise</span>
+            <span class="earnings-metric-value up">+3.7%</span>
+          </div>
+        </div>
+        <div class="earnings-stock-move">
+          <span class="earnings-stock-label">After-Hours Move</span>
+          <span class="earnings-stock-change up">+3.12%</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Crypto Section -->
+    <div class="crypto-section" id="crypto-container">
+      <div class="crypto-header">
+        <h2 class="crypto-title">₿ Trending Crypto</h2>
+        <span class="crypto-badge">Live</span>
+      </div>
+
+      <!-- Crypto Prices Strip -->
+      <div class="crypto-prices">
+        <div class="crypto-price-item">
+          <span class="crypto-icon">₿</span>
+          <span class="crypto-ticker">BTC</span>
+          <span class="crypto-value">$104,567</span>
+          <span class="crypto-pct up">+2.34%</span>
+        </div>
+        <div class="crypto-price-item">
+          <span class="crypto-icon">Ξ</span>
+          <span class="crypto-ticker">ETH</span>
+          <span class="crypto-value">$3,892</span>
+          <span class="crypto-pct up">+1.89%</span>
+        </div>
+        <div class="crypto-price-item">
+          <span class="crypto-icon">◎</span>
+          <span class="crypto-ticker">SOL</span>
+          <span class="crypto-value">$198.45</span>
+          <span class="crypto-pct up">+5.67%</span>
+        </div>
+      </div>
+
+      <!-- Crypto Articles -->
+      <div class="crypto-article">
+        <div class="crypto-article-time">5 min ago</div>
+        <h3 class="crypto-article-title">Bitcoin Breaks $104K as Institutional Demand Surges Post-ETF Approval</h3>
+        <p class="crypto-article-summary">Bitcoin hit a new all-time high as spot ETF inflows exceeded $2.1B this week. BlackRock's IBIT now holds over 500,000 BTC.</p>
+        <div class="crypto-article-tags">
+          <span class="crypto-tag">BTC</span>
+          <span class="crypto-tag">ETF</span>
+          <span class="crypto-sentiment bullish">Bullish</span>
+        </div>
+      </div>
+
+      <div class="crypto-article">
+        <div class="crypto-article-time">18 min ago</div>
+        <h3 class="crypto-article-title">Ethereum Staking Yields Hit 4.8% as Network Activity Spikes</h3>
+        <p class="crypto-article-summary">ETH staking rewards increased following surge in DeFi activity. Total value locked across protocols reaches $89B.</p>
+        <div class="crypto-article-tags">
+          <span class="crypto-tag">ETH</span>
+          <span class="crypto-tag">DeFi</span>
+          <span class="crypto-sentiment bullish">Bullish</span>
+        </div>
+      </div>
+
+      <div class="crypto-article">
+        <div class="crypto-article-time">32 min ago</div>
+        <h3 class="crypto-article-title">Solana Memecoin Frenzy Drives SOL to $198, Network Handles 65K TPS</h3>
+        <p class="crypto-article-summary">Solana ecosystem sees massive surge in activity as new memecoins launch. DEX volumes hit $4.2B in 24 hours.</p>
+        <div class="crypto-article-tags">
+          <span class="crypto-tag">SOL</span>
+          <span class="crypto-tag">Memecoins</span>
+          <span class="crypto-sentiment bullish">Bullish</span>
+        </div>
+      </div>
+
+      <div class="crypto-article">
+        <div class="crypto-article-time">1 hr ago</div>
+        <h3 class="crypto-article-title">XRP Gains 12% on ETF Speculation, Whale Accumulation Detected</h3>
+        <p class="crypto-article-summary">XRP rallies as rumors of spot ETF filing circulate. On-chain data shows large wallets accumulating since Tuesday.</p>
+        <div class="crypto-article-tags">
+          <span class="crypto-tag">XRP</span>
+          <span class="crypto-tag">ETF</span>
+          <span class="crypto-sentiment bullish">Bullish</span>
+        </div>
+      </div>
+
+      <div class="crypto-article">
+        <div class="crypto-article-time">1 hr ago</div>
+        <h3 class="crypto-article-title">Coinbase Stock Surges as Crypto Trading Volume Hits 2024 Highs</h3>
+        <p class="crypto-article-summary">COIN up 5.67% as retail trading activity returns to the platform. CEO predicts "multi-year bull market" ahead.</p>
+        <div class="crypto-article-tags">
+          <span class="crypto-tag">COIN</span>
+          <span class="crypto-tag">Exchange</span>
+          <span class="crypto-sentiment bullish">Bullish</span>
+        </div>
+      </div>
+
+      <div class="crypto-article">
+        <div class="crypto-article-time">2 hr ago</div>
+        <h3 class="crypto-article-title">MicroStrategy Adds Another 15,000 BTC, Total Holdings Now 439,000</h3>
+        <p class="crypto-article-summary">Michael Saylor's company continues aggressive Bitcoin accumulation. MSTR stock up 8.23% on the news.</p>
+        <div class="crypto-article-tags">
+          <span class="crypto-tag">MSTR</span>
+          <span class="crypto-tag">BTC</span>
+          <span class="crypto-sentiment bullish">Bullish</span>
+        </div>
+      </div>
+
+      <div class="crypto-article">
+        <div class="crypto-article-time">3 hr ago</div>
+        <h3 class="crypto-article-title">SEC Drops Investigation Into Ethereum, ETH Rallies 8%</h3>
+        <p class="crypto-article-summary">Regulatory clarity boosts market sentiment. Analysts expect spot ETH ETF approval within 60 days.</p>
+        <div class="crypto-article-tags">
+          <span class="crypto-tag">ETH</span>
+          <span class="crypto-tag">Regulation</span>
+          <span class="crypto-sentiment bullish">Bullish</span>
+        </div>
+      </div>
+
+      <div class="crypto-article">
+        <div class="crypto-article-time">4 hr ago</div>
+        <h3 class="crypto-article-title">Tether Reports $7.7B Profit in Q4, Largest Stablecoin Reserve Audit</h3>
+        <p class="crypto-article-summary">USDT issuer posts record earnings backed by US Treasury holdings. Market cap approaches $140B.</p>
+        <div class="crypto-article-tags">
+          <span class="crypto-tag">USDT</span>
+          <span class="crypto-tag">Stablecoin</span>
+          <span class="crypto-sentiment neutral">Neutral</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- News Section -->
+    <div class="news-section" id="news-container" style="display: none;">
+      <!-- Featured Article -->
+      <div class="news-card featured-card">
+        <div class="featured-label">Featured</div>
+        <div class="news-card-header">
+          <div class="news-source">
+            <div class="source-icon">AI</div>
+            <span class="source-name">ApeHub Analysis</span>
+          </div>
+          <span class="news-time">2 min ago</span>
+        </div>
+        <h3 class="news-title">Fed Signals Potential Rate Pause as Inflation Data Cools</h3>
+        <p class="news-summary">Federal Reserve officials are increasingly signaling comfort with current interest rate levels after the latest CPI report showed inflation continuing to moderate toward the 2% target.</p>
+        <div class="news-tags">
+          <span class="news-tag bullish">Bullish Signal</span>
+          <span class="news-tag">Macro</span>
+          <span class="news-tag">Fed Policy</span>
+        </div>
+        <div class="news-stocks">
+          <div class="news-stock">
+            <span class="news-stock-symbol">SPY</span>
+            <span class="news-stock-change up">+1.24%</span>
+          </div>
+          <div class="news-stock">
+            <span class="news-stock-symbol">TLT</span>
+            <span class="news-stock-change up">+0.87%</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Regular Articles -->
+      <div class="news-card">
+        <div class="news-card-header">
+          <div class="news-source">
+            <div class="source-icon">AI</div>
+            <span class="source-name">ApeHub Analysis</span>
+          </div>
+          <span class="news-time">15 min ago</span>
+        </div>
+        <h3 class="news-title">NVIDIA Surges on Record Data Center Revenue, AI Demand Accelerates</h3>
+        <p class="news-summary">NVIDIA reported better-than-expected quarterly results driven by unprecedented demand for AI chips. Data center revenue hit $18.4B, up 409% year-over-year.</p>
+        <div class="news-tags">
+          <span class="news-tag bullish">Bullish Signal</span>
+          <span class="news-tag">AI</span>
+          <span class="news-tag">Earnings</span>
+        </div>
+        <div class="news-stocks">
+          <div class="news-stock">
+            <span class="news-stock-symbol">NVDA</span>
+            <span class="news-stock-change up">+4.52%</span>
+          </div>
+          <div class="news-stock">
+            <span class="news-stock-symbol">AMD</span>
+            <span class="news-stock-change up">+2.18%</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="news-card">
+        <div class="news-card-header">
+          <div class="news-source">
+            <div class="source-icon">AI</div>
+            <span class="source-name">ApeHub Analysis</span>
+          </div>
+          <span class="news-time">32 min ago</span>
+        </div>
+        <h3 class="news-title">Tesla Announces Major Battery Breakthrough, Stock Rallies</h3>
+        <p class="news-summary">Tesla unveiled next-generation 4680 battery cells with 50% more range and 30% lower production costs. Production ramp expected by Q3.</p>
+        <div class="news-tags">
+          <span class="news-tag bullish">Bullish Signal</span>
+          <span class="news-tag">EV</span>
+          <span class="news-tag">Technology</span>
+        </div>
+        <div class="news-stocks">
+          <div class="news-stock">
+            <span class="news-stock-symbol">TSLA</span>
+            <span class="news-stock-change up">+3.87%</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="news-card">
+        <div class="news-card-header">
+          <div class="news-source">
+            <div class="source-icon">AI</div>
+            <span class="source-name">ApeHub Analysis</span>
+          </div>
+          <span class="news-time">1 hr ago</span>
+        </div>
+        <h3 class="news-title">Apple Vision Pro Sales Exceed Expectations, AR Market Heats Up</h3>
+        <p class="news-summary">Apple's Vision Pro headset sold 500K+ units in first month, beating analyst estimates. Tim Cook hints at more affordable version coming next year.</p>
+        <div class="news-tags">
+          <span class="news-tag bullish">Bullish Signal</span>
+          <span class="news-tag">Apple</span>
+          <span class="news-tag">AR/VR</span>
+        </div>
+        <div class="news-stocks">
+          <div class="news-stock">
+            <span class="news-stock-symbol">AAPL</span>
+            <span class="news-stock-change up">+2.34%</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="news-card">
+        <div class="news-card-header">
+          <div class="news-source">
+            <div class="source-icon">AI</div>
+            <span class="source-name">ApeHub Analysis</span>
+          </div>
+          <span class="news-time">2 hr ago</span>
+        </div>
+        <h3 class="news-title">Oil Prices Tumble as OPEC+ Signals Production Increase</h3>
+        <p class="news-summary">Crude oil fell 4% after OPEC+ members indicated willingness to boost production. Energy sector leads market losses.</p>
+        <div class="news-tags">
+          <span class="news-tag bearish">Bearish Signal</span>
+          <span class="news-tag">Energy</span>
+          <span class="news-tag">Commodities</span>
+        </div>
+        <div class="news-stocks">
+          <div class="news-stock">
+            <span class="news-stock-symbol">XOM</span>
+            <span class="news-stock-change down">-2.45%</span>
+          </div>
+          <div class="news-stock">
+            <span class="news-stock-symbol">CVX</span>
+            <span class="news-stock-change down">-2.12%</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="news-card">
+        <div class="news-card-header">
+          <div class="news-source">
+            <div class="source-icon">AI</div>
+            <span class="source-name">ApeHub Analysis</span>
+          </div>
+          <span class="news-time">3 hr ago</span>
+        </div>
+        <h3 class="news-title">Bitcoin Breaks $100K Resistance, Institutional Inflows Accelerate</h3>
+        <p class="news-summary">Bitcoin surged past the psychological $100,000 level as spot ETF inflows hit record highs. Analysts see potential for continued momentum.</p>
+        <div class="news-tags">
+          <span class="news-tag bullish">Bullish Signal</span>
+          <span class="news-tag">Crypto</span>
+          <span class="news-tag">Bitcoin</span>
+        </div>
+        <div class="news-stocks">
+          <div class="news-stock">
+            <span class="news-stock-symbol">COIN</span>
+            <span class="news-stock-change up">+5.67%</span>
+          </div>
+          <div class="news-stock">
+            <span class="news-stock-symbol">MSTR</span>
+            <span class="news-stock-change up">+8.23%</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="news-card">
+        <div class="news-card-header">
+          <div class="news-source">
+            <div class="source-icon">AI</div>
+            <span class="source-name">ApeHub Analysis</span>
+          </div>
+          <span class="news-time">4 hr ago</span>
+        </div>
+        <h3 class="news-title">Microsoft Cloud Revenue Beats, Azure Growth Accelerates</h3>
+        <p class="news-summary">Microsoft reported cloud revenue of $28.5B with Azure growing 31% YoY. AI services driving enterprise adoption higher than expected.</p>
+        <div class="news-tags">
+          <span class="news-tag bullish">Bullish Signal</span>
+          <span class="news-tag">Cloud</span>
+          <span class="news-tag">Earnings</span>
+        </div>
+        <div class="news-stocks">
+          <div class="news-stock">
+            <span class="news-stock-symbol">MSFT</span>
+            <span class="news-stock-change up">+1.89%</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bottom Nav -->
+  <nav class="bottom-nav">
+    <a href="dashboard.html" class="nav-item">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+        <polyline points="9 22 9 12 15 12 15 22"/>
+      </svg>
+      <span>Home</span>
+    </a>
+    <a href="news.html" class="nav-item active">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M12 2a4 4 0 0 1 4 4v1h2a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2h2V6a4 4 0 0 1 4-4z"/>
+        <circle cx="12" cy="13" r="3"/>
+        <path d="M12 16v2"/>
+      </svg>
+      <span>AI News</span>
+    </a>
+    <a href="markets.html" class="nav-item">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+      </svg>
+      <span>Markets</span>
+    </a>
+    <a href="chat.html" class="nav-item">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+      </svg>
+      <span>Chat</span>
+    </a>
+  </nav>
+
+  <script>
+    // Category tab switching
+    const newsContainer = document.getElementById('news-container');
+    const earningsContainer = document.getElementById('earnings-container');
+    const cryptoContainer = document.getElementById('crypto-container');
+    const breakingContainer = document.getElementById('breaking-container');
+    const fedContainer = document.getElementById('fed-container');
+    const techContainer = document.getElementById('tech-container');
+
+    document.querySelectorAll('.category-tab').forEach(tab => {
+      tab.addEventListener('click', function() {
+        document.querySelectorAll('.category-tab').forEach(t => t.classList.remove('active'));
+        this.classList.add('active');
+
+        const category = this.dataset.category;
+        
+        // Hide all sections first
+        newsContainer.style.display = 'none';
+        earningsContainer.classList.remove('active');
+        cryptoContainer.classList.remove('active');
+        breakingContainer.classList.remove('active');
+        fedContainer.classList.remove('active');
+        techContainer.classList.remove('active');
+        
+        // Show appropriate section
+        if (category === 'earnings') {
+          earningsContainer.classList.add('active');
+        } else if (category === 'crypto') {
+          cryptoContainer.classList.add('active');
+        } else if (category === 'breaking') {
+          breakingContainer.classList.add('active');
+        } else if (category === 'fed') {
+          fedContainer.classList.add('active');
+        } else if (category === 'tech') {
+          techContainer.classList.add('active');
+        } else {
+          newsContainer.style.display = 'block';
+        }
+      });
+    });
+
+    // Update time
+    function updateTime() {
+      const now = new Date();
+      const hours = now.getHours();
+      const minutes = now.getMinutes().toString().padStart(2, '0');
+      const ampm = hours >= 12 ? 'PM' : 'AM';
+      const displayHours = hours % 12 || 12;
+      document.getElementById('update-time').textContent = `${displayHours}:${minutes} ${ampm} EST`;
+    }
+    updateTime();
+    setInterval(updateTime, 60000);
+  </script>
+</body>
+</html>
