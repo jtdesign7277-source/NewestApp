@@ -3093,7 +3093,78 @@
         const data = JSON.parse(saved);
         Object.assign(userProfile, data);
       }
+      
+      // Check if user just came from payment
+      const urlParams = new URLSearchParams(window.location.search);
+      if (urlParams.get('payment') === 'success') {
+        const email = localStorage.getItem('userEmail');
+        if (email) {
+          userProfile.email = email;
+          // Extract name from email
+          userProfile.name = email.split('@')[0].charAt(0).toUpperCase() + email.split('@')[0].slice(1);
+          // Save updated profile
+          localStorage.setItem('apehub_user_profile', JSON.stringify(userProfile));
+          // Remove payment param from URL
+          window.history.replaceState({}, document.title, window.location.pathname);
+        }
+      }
+      
       updateProfileDisplay();
+      checkSubscriptionStatus();
+    }
+
+    function checkSubscriptionStatus() {
+      // For now, we'll mark user as subscribed if they just paid
+      const urlParams = new URLSearchParams(window.location.search);
+      if (urlParams.get('payment') === 'success') {
+        const subscriptionBanner = document.createElement('div');
+        subscriptionBanner.style.cssText = `
+          position: fixed;
+          top: 0;
+          left: 0;
+          right: 0;
+          background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+          color: white;
+          padding: 16px 24px;
+          text-align: center;
+          font-weight: 600;
+          z-index: 9999;
+          animation: slideDown 0.3s ease-out;
+        `;
+        subscriptionBanner.innerHTML = '✓ Subscription activated! Welcome to premium access.';
+        document.body.insertBefore(subscriptionBanner, document.body.firstChild);
+        
+        // Add animation
+        const style = document.createElement('style');
+        style.textContent = `
+          @keyframes slideDown {
+            from {
+              transform: translateY(-100%);
+              opacity: 0;
+            }
+            to {
+              transform: translateY(0);
+              opacity: 1;
+            }
+          }
+        `;
+        document.head.appendChild(style);
+        
+        // Remove banner after 5 seconds
+        setTimeout(() => {
+          subscriptionBanner.style.animation = 'slideDown 0.3s ease-out reverse';
+          setTimeout(() => subscriptionBanner.remove(), 300);
+        }, 5000);
+        
+        // Add subscription badge to profile
+        userProfile.subscribed = true;
+        localStorage.setItem('apehub_user_profile', JSON.stringify(userProfile));
+      } else {
+        // Check if already subscribed
+        if (userProfile.subscribed) {
+          console.log('User has active subscription');
+        }
+      }
     }
 
     function updateProfileDisplay() {
