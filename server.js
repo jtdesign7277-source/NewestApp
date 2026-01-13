@@ -237,14 +237,20 @@ app.get('/api/subscription-status/:customerId', async (req, res) => {
   }
 });
 
-// Serve static files (after all API routes!)
-app.use(express.static(__dirname));
-
-// Serve the main dashboard app
+// Serve the main dashboard app FIRST (before static files)
 app.get('/', (req, res) => {
   res.set('Cache-Control', 'no-store, no-cache, must-revalidate');
   res.sendFile(path.join(__dirname, 'dashboard.html'));
 });
+
+// Serve static files (but not HTML files at root)
+app.use(express.static(__dirname, {
+  setHeaders: (res, path) => {
+    if (path.endsWith('.html')) {
+      res.set('Cache-Control', 'no-store, no-cache, must-revalidate');
+    }
+  }
+}));
 
 app.get('/dashboard.html', (req, res) => {
   res.set('Cache-Control', 'no-store, no-cache, must-revalidate');
