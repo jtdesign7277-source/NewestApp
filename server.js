@@ -75,9 +75,8 @@ const getSubscription = (customerId) => {
   });
 };
 
-// Middleware
-app.use(express.json());
-app.use(express.static(__dirname));
+// Middleware - order matters!
+app.use(express.json({ limit: '10mb' }));
 
 // Logging middleware
 app.use((req, res, next) => {
@@ -85,6 +84,7 @@ app.use((req, res, next) => {
   next();
 });
 
+// API Routes (before static files!)
 // Create Checkout Session endpoint
 app.post('/api/create-checkout-session', async (req, res) => {
   console.log('Checkout session request received:', req.body);
@@ -229,6 +229,9 @@ app.get('/api/subscription-status/:customerId', async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 });
+
+// Serve static files (after all API routes!)
+app.use(express.static(__dirname));
 
 // Serve the landing page
 app.get('/', (req, res) => {
