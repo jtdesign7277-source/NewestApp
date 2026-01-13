@@ -43,7 +43,7 @@ Purple Hell is a **financial dashboard application** with:
 
 ## ⚠️ OLD/DEPRECATED FILES (IGNORE THESE)
 
-- `LandingPurple _ DailyEdgeFinance.html` - **OLD PROJECT from Base 44**
+- `LandingPurple _ DailyEdgeFinance.html` - **OLD/LEGACY FILE**
 - This is NOT your current project - do NOT serve this
 - This file has a confusing name with spaces - avoid using it
 
@@ -88,10 +88,6 @@ The actual project work is in these commits:
 - TradingView charts
 - Theme persistence (dark/light)
 - Stripe webhook integration
-
-**OLD COMMITS** (Base 44 project):
-- LandingPurple setup
-- Ignore these - they're for the deprecated landing page
 
 ---
 
