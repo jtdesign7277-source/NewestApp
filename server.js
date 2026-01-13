@@ -286,7 +286,10 @@ app.use((req, res) => {
 });
 
 app.listen(PORT, () => {
-  console.log(`Server running on http://localhost:${PORT}`);
-  console.log('Serving ONLY Purple Hell app');
-});
+  console.log(`\n=====================================`);
+  console.log(`✓ Server running on http://localhost:${PORT}`);
+  console.log(`✓ Started at: ${new Date().toISOString()}`);
+  console.log(`✓ Serving ONLY Purple Hell app`);
+  console.log(`✓ Build timestamp: ${Date.now()}`);
+  console.log(`=====================================\n`);
 
