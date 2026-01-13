@@ -19,11 +19,12 @@
       --bg-secondary: #111118;
       --bg-card: rgba(255, 255, 255, 0.03);
       --bg-card-hover: rgba(255, 255, 255, 0.06);
+      --bg-solid: #1a1a24;
       --text-primary: #fff;
       --text-secondary: rgba(255, 255, 255, 0.6);
       --text-muted: rgba(255, 255, 255, 0.4);
-      --border-color: rgba(255, 255, 255, 0.08);
-      --border-light: rgba(255, 255, 255, 0.06);
+      --border-color: rgba(255, 255, 255, 0.15);
+      --border-light: rgba(255, 255, 255, 0.1);
       --accent: #a855f7;
       --accent-glow: rgba(168, 85, 247, 0.3);
       --nav-bg: rgba(10, 10, 15, 0.95);
@@ -36,11 +37,12 @@
       --bg-secondary: #ffffff;
       --bg-card: rgba(0, 0, 0, 0.04);
       --bg-card-hover: rgba(0, 0, 0, 0.08);
-      --text-primary: #1a1a2e;
-      --text-secondary: #4a4a5a;
-      --text-muted: #6b6b7b;
-      --border-color: rgba(0, 0, 0, 0.12);
-      --border-light: rgba(0, 0, 0, 0.08);
+      --bg-solid: #ffffff;
+      --text-primary: #000000;
+      --text-secondary: #333333;
+      --text-muted: #555555;
+      --border-color: rgba(0, 0, 0, 0.15);
+      --border-light: rgba(0, 0, 0, 0.1);
       --accent: #7c3aed;
       --accent-glow: rgba(124, 58, 237, 0.15);
       --nav-bg: rgba(255, 255, 255, 0.95);
@@ -68,13 +70,20 @@
     }
 
     /* ============================================
-       TOP BAR - Clock Left, Welcome Right
+       TOP BAR - Logo Left, Welcome Right
        ============================================ */
     .top-bar {
-      padding: 60px 24px 24px;
+      padding: 60px 24px 16px;
       display: flex;
       justify-content: space-between;
-      align-items: flex-start;
+      align-items: center;
+    }
+
+    /* ============================================
+       CLOCK SECTION
+       ============================================ */
+    .clock-section {
+      padding: 8px 24px 24px;
     }
 
     .clock-left {
@@ -156,6 +165,16 @@
     .countdown-label {
       font-size: 11px;
       color: var(--text-muted);
+    }
+
+    .apehub-logo {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    .apehub-logo span {
+      color: var(--accent);
     }
 
     .welcome {
@@ -255,7 +274,7 @@
     }
 
     .profile-close:hover {
-      background: rgba(255, 255, 255, 0.15);
+      background: var(--bg-card-hover);
     }
 
     .profile-content {
@@ -296,13 +315,13 @@
     .profile-name {
       font-size: 17px;
       font-weight: 600;
-      color: #fff;
+      color: var(--text-primary);
       margin-bottom: 2px;
     }
 
     .profile-handle {
       font-size: 13px;
-      color: rgba(255, 255, 255, 0.5);
+      color: var(--text-muted);
     }
 
     .profile-info-section {
@@ -312,7 +331,7 @@
     .profile-info-title {
       font-size: 11px;
       font-weight: 600;
-      color: rgba(255, 255, 255, 0.4);
+      color: var(--text-muted);
       text-transform: uppercase;
       letter-spacing: 0.5px;
       margin-bottom: 12px;
@@ -323,7 +342,7 @@
       align-items: center;
       gap: 12px;
       padding: 14px 0;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+      border-bottom: 1px solid var(--border-light);
     }
 
     .profile-info-item:last-child {
@@ -334,11 +353,11 @@
       width: 40px;
       height: 40px;
       border-radius: 10px;
-      background: rgba(168, 85, 247, 0.15);
+      background: var(--accent-glow);
       display: flex;
       align-items: center;
       justify-content: center;
-      color: #a855f7;
+      color: var(--accent);
       font-size: 18px;
     }
 
@@ -348,21 +367,21 @@
 
     .profile-info-label {
       font-size: 12px;
-      color: rgba(255, 255, 255, 0.4);
+      color: var(--text-muted);
       margin-bottom: 2px;
     }
 
     .profile-info-value {
       font-size: 15px;
       font-weight: 500;
-      color: #fff;
+      color: var(--text-primary);
     }
 
     /* ============================================
        SUPPORT CHAT WIDGET
        ============================================ */
     .support-section {
-      background: rgba(168, 85, 247, 0.08);
+      background: var(--accent-glow);
       border-radius: 16px;
       padding: 20px;
       margin-bottom: 24px;
@@ -389,12 +408,12 @@
     .support-title {
       font-size: 16px;
       font-weight: 600;
-      color: #fff;
+      color: var(--text-primary);
     }
 
     .support-subtitle {
       font-size: 13px;
-      color: rgba(255, 255, 255, 0.5);
+      color: var(--text-muted);
     }
 
     .chat-messages {
@@ -415,14 +434,14 @@
     }
 
     .chat-message.support {
-      background: rgba(255, 255, 255, 0.1);
-      color: #fff;
+      background: var(--bg-card);
+      color: var(--text-primary);
       align-self: flex-start;
       border-bottom-left-radius: 4px;
     }
 
     .chat-message.user {
-      background: #a855f7;
+      background: var(--accent);
       color: #fff;
       align-self: flex-end;
       border-bottom-right-radius: 4px;
@@ -430,7 +449,7 @@
 
     .chat-message-time {
       font-size: 10px;
-      color: rgba(255, 255, 255, 0.4);
+      color: var(--text-muted);
       margin-top: 4px;
     }
 
@@ -441,23 +460,23 @@
 
     .chat-input {
       flex: 1;
-      background: rgba(255, 255, 255, 0.1);
-      border: 1px solid rgba(255, 255, 255, 0.1);
+      background: var(--input-bg);
+      border: 1px solid var(--border-color);
       border-radius: 24px;
       padding: 12px 16px;
-      color: #fff;
+      color: var(--text-primary);
       font-size: 14px;
       outline: none;
       transition: all 0.2s ease;
     }
 
     .chat-input:focus {
-      border-color: #a855f7;
-      background: rgba(168, 85, 247, 0.1);
+      border-color: var(--accent);
+      background: var(--accent-glow);
     }
 
     .chat-input::placeholder {
-      color: rgba(255, 255, 255, 0.4);
+      color: var(--text-muted);
     }
 
     .chat-send {
@@ -560,7 +579,7 @@
       left: 0;
       right: 0;
       bottom: 0;
-      background: rgba(255, 255, 255, 0.15);
+      background: var(--border-color);
       border-radius: 28px;
       transition: all 0.3s ease;
     }
@@ -572,7 +591,7 @@
       width: 22px;
       left: 3px;
       bottom: 3px;
-      background: #fff;
+      background: var(--text-primary);
       border-radius: 50%;
       transition: all 0.3s ease;
       box-shadow: 0 2px 4px rgba(0,0,0,0.2);
@@ -608,7 +627,7 @@
        ============================================ */
     .indices-section {
       padding: 0 0 32px;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+      border-bottom: 1px solid var(--border-color);
     }
 
     .indices-header {
@@ -620,7 +639,7 @@
 
     .indices-title {
       font-size: 11px;
-      color: rgba(255, 255, 255, 0.35);
+      color: var(--text-muted);
       font-weight: 600;
       letter-spacing: 1.5px;
       text-transform: uppercase;
@@ -631,7 +650,7 @@
       align-items: center;
       gap: 6px;
       font-size: 11px;
-      color: rgba(255, 255, 255, 0.4);
+      color: var(--text-muted);
       font-weight: 500;
     }
 
@@ -658,7 +677,7 @@
       flex: 0 0 auto;
       min-width: 120px;
       padding: 0 20px 0 0;
-      border-right: 1px solid rgba(255, 255, 255, 0.06);
+      border-right: 1px solid var(--border-color);
     }
 
     .index-item:last-child {
@@ -672,7 +691,7 @@
 
     .index-name {
       font-size: 11px;
-      color: rgba(255, 255, 255, 0.4);
+      color: var(--text-muted);
       font-weight: 500;
       margin-bottom: 4px;
       letter-spacing: 0.3px;
@@ -681,7 +700,7 @@
     .index-value {
       font-size: 16px;
       font-weight: 600;
-      color: #fff;
+      color: var(--text-primary);
       margin-bottom: 2px;
     }
 
@@ -701,7 +720,7 @@
     .market-price {
       font-size: 18px;
       font-weight: 700;
-      color: #fff;
+      color: var(--text-primary);
       margin-bottom: 2px;
     }
 
@@ -739,7 +758,7 @@
     .wl-list-name {
       font-size: 11px;
       font-weight: 600;
-      color: rgba(255, 255, 255, 0.35);
+      color: var(--text-muted);
       letter-spacing: 1.5px;
       text-transform: uppercase;
       margin-bottom: 8px;
@@ -747,22 +766,25 @@
 
     .wl-total-value {
       display: flex;
-      align-items: baseline;
-      gap: 8px;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 4px;
       cursor: pointer;
     }
 
     .wl-total-amount {
       font-size: 32px;
       font-weight: 600;
-      color: #fff;
+      color: var(--text-primary);
       letter-spacing: -1px;
+      order: 1;
     }
 
     .wl-total-change {
       font-size: 14px;
       font-weight: 600;
       color: #00d775;
+      order: 2;
     }
 
     .wl-total-change.down {
@@ -800,14 +822,14 @@
     .wl-eye-btn {
       background: none;
       border: none;
-      color: rgba(255, 255, 255, 0.3);
+      color: var(--text-muted);
       cursor: pointer;
       padding: 8px;
       transition: all 0.2s;
     }
 
     .wl-eye-btn:hover {
-      color: rgba(255, 255, 255, 0.6);
+      color: var(--text-secondary);
     }
 
     .wl-eye-btn .eye-open {
@@ -836,14 +858,14 @@
     .wl-collapse-btn {
       background: none;
       border: none;
-      color: rgba(255, 255, 255, 0.3);
+      color: var(--text-muted);
       cursor: pointer;
       padding: 4px 16px;
       transition: all 0.3s;
     }
 
     .wl-collapse-btn:hover {
-      color: rgba(255, 255, 255, 0.6);
+      color: var(--text-secondary);
     }
 
     .wl-collapse-btn.collapsed {
@@ -866,19 +888,19 @@
       border: none;
       border-radius: 14px;
       font-size: 15px;
-      background: rgba(255, 255, 255, 0.06);
-      color: #fff;
+      background: var(--input-bg);
+      color: var(--text-primary);
       outline: none;
       transition: all 0.2s;
     }
 
     .wl-search-input::placeholder {
-      color: rgba(255, 255, 255, 0.3);
+      color: var(--text-muted);
     }
 
     .wl-search-input:focus {
-      background: rgba(255, 255, 255, 0.1);
-      box-shadow: 0 0 0 2px rgba(168, 85, 247, 0.3);
+      background: var(--bg-card-hover);
+      box-shadow: 0 0 0 2px var(--accent-glow);
     }
 
     .wl-search-icon {
@@ -886,7 +908,7 @@
       left: 18px;
       top: 50%;
       transform: translateY(-50%);
-      color: rgba(255, 255, 255, 0.3);
+      color: var(--text-muted);
       pointer-events: none;
     }
 
@@ -897,7 +919,7 @@
       transform: translateY(-50%);
       background: none;
       border: none;
-      color: rgba(255, 255, 255, 0.3);
+      color: var(--text-muted);
       cursor: pointer;
       padding: 4px;
       border-radius: 50%;
@@ -906,7 +928,7 @@
     }
 
     .wl-search-clear:hover {
-      color: #fff;
+      color: var(--text-primary);
     }
 
     .wl-search-clear.visible {
@@ -921,14 +943,14 @@
       top: calc(100% + 8px);
       left: 0;
       right: 0;
-      background: #1a1a1f;
-      border: 1px solid rgba(255, 255, 255, 0.1);
+      background: var(--bg-solid);
+      border: 1px solid var(--border-color);
       border-radius: 12px;
       max-height: 400px;
       overflow-y: auto;
-      z-index: 100;
+      z-index: 1000;
       display: none;
-      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
     }
 
     .wl-search-results.visible {
@@ -941,7 +963,7 @@
       align-items: center;
       gap: 12px;
       padding: 14px 16px;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+      border-bottom: 1px solid var(--border-light);
       cursor: pointer;
       transition: background 0.2s;
     }
@@ -951,7 +973,7 @@
     }
 
     .wl-search-result:hover {
-      background: rgba(255, 255, 255, 0.05);
+      background: var(--bg-card-hover);
     }
 
     .wl-result-info {
@@ -964,12 +986,12 @@
     .wl-result-symbol {
       font-weight: 700;
       font-size: 15px;
-      color: #fff;
+      color: var(--text-primary);
     }
 
     .wl-result-name {
       font-size: 13px;
-      color: #888;
+      color: var(--text-muted);
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
@@ -988,7 +1010,7 @@
     .wl-result-price {
       font-weight: 600;
       font-size: 15px;
-      color: #fff;
+      color: var(--text-primary);
     }
 
     .wl-result-change {
@@ -1035,7 +1057,7 @@
     }
 
     .wl-star-btn .star-empty {
-      color: #555;
+      color: var(--text-muted);
     }
 
     .wl-star-btn .star-filled {
@@ -1055,7 +1077,7 @@
     .wl-no-results {
       padding: 30px;
       text-align: center;
-      color: #666;
+      color: var(--text-muted);
       font-size: 14px;
     }
 
@@ -1072,7 +1094,7 @@
     .watchlist-label {
       font-size: 11px;
       font-weight: 600;
-      color: rgba(255, 255, 255, 0.35);
+      color: var(--text-muted);
       letter-spacing: 1.5px;
       text-transform: uppercase;
     }
@@ -1097,14 +1119,14 @@
       align-items: center;
       gap: 12px;
       padding: 16px 0;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+      border-bottom: 1px solid var(--border-light);
       transition: background 0.2s;
       position: relative;
       cursor: pointer;
     }
 
     .wl-stock-row:active {
-      background: rgba(255, 255, 255, 0.03);
+      background: var(--bg-card-hover);
     }
 
     .wl-stock-row:last-child {
@@ -1121,13 +1143,13 @@
     .wl-stock-symbol {
       font-weight: 600;
       font-size: 16px;
-      color: #fff;
+      color: var(--text-primary);
       letter-spacing: -0.3px;
     }
 
     .wl-stock-name {
       font-size: 13px;
-      color: rgba(255, 255, 255, 0.4);
+      color: var(--text-muted);
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
@@ -1149,7 +1171,7 @@
     .wl-stock-price {
       font-weight: 600;
       font-size: 16px;
-      color: #fff;
+      color: var(--text-primary);
     }
 
     .wl-stock-change {
@@ -1174,7 +1196,7 @@
       padding: 4px;
       opacity: 0.3;
       transition: all 0.2s;
-      color: rgba(255, 255, 255, 0.5);
+      color: var(--text-muted);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -1194,7 +1216,7 @@
     .wl-empty {
       padding: 60px 24px;
       text-align: center;
-      color: #666;
+      color: var(--text-muted);
     }
 
     .wl-empty-icon {
@@ -1205,14 +1227,14 @@
 
     .wl-empty h3 {
       font-size: 18px;
-      color: #888;
+      color: var(--text-secondary);
       margin-bottom: 8px;
       font-weight: 500;
     }
 
     .wl-empty p {
       font-size: 14px;
-      color: #555;
+      color: var(--text-muted);
     }
 
     /* ============================================
@@ -1223,8 +1245,8 @@
       bottom: 100px;
       left: 50%;
       transform: translateX(-50%) translateY(100px);
-      background: #1d1d1f;
-      color: #fff;
+      background: var(--bg-card);
+      color: var(--text-primary);
       padding: 12px 20px;
       border-radius: 8px;
       font-size: 14px;
@@ -1275,7 +1297,7 @@
     }
 
     .modal-content {
-      background: #1a1a1f;
+      background: var(--bg-card);
       border-radius: 24px 24px 0 0;
       width: 100%;
       max-width: 500px;
@@ -1292,7 +1314,7 @@
     .modal-handle {
       width: 40px;
       height: 4px;
-      background: rgba(255, 255, 255, 0.2);
+      background: var(--border-color);
       border-radius: 2px;
       margin: 0 auto 20px;
     }
@@ -1313,12 +1335,12 @@
     .modal-symbol {
       font-size: 24px;
       font-weight: 700;
-      color: #fff;
+      color: var(--text-primary);
     }
 
     .modal-name {
       font-size: 14px;
-      color: rgba(255, 255, 255, 0.5);
+      color: var(--text-muted);
     }
 
     .modal-price-info {
@@ -1328,7 +1350,7 @@
     .modal-current-price {
       font-size: 20px;
       font-weight: 600;
-      color: #fff;
+      color: var(--text-primary);
     }
 
     .modal-price-change {
@@ -1359,30 +1381,30 @@
     .form-label {
       font-size: 12px;
       font-weight: 600;
-      color: rgba(255, 255, 255, 0.5);
+      color: var(--text-muted);
       text-transform: uppercase;
       letter-spacing: 1px;
     }
 
     .form-input {
-      background: rgba(255, 255, 255, 0.06);
+      background: var(--input-bg);
       border: none;
       border-radius: 12px;
       padding: 16px;
       font-size: 18px;
       font-weight: 600;
-      color: #fff;
+      color: var(--text-primary);
       outline: none;
       transition: all 0.2s;
     }
 
     .form-input::placeholder {
-      color: rgba(255, 255, 255, 0.25);
+      color: var(--text-muted);
     }
 
     .form-input:focus {
-      background: rgba(255, 255, 255, 0.1);
-      box-shadow: 0 0 0 2px rgba(168, 85, 247, 0.3);
+      background: var(--bg-card-hover);
+      box-shadow: 0 0 0 2px var(--accent-glow);
     }
 
     .form-row {
@@ -1392,7 +1414,7 @@
     }
 
     .position-summary {
-      background: rgba(255, 255, 255, 0.04);
+      background: var(--input-bg);
       border-radius: 12px;
       padding: 16px;
       margin-top: 8px;
@@ -1406,18 +1428,18 @@
     }
 
     .summary-row:not(:last-child) {
-      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+      border-bottom: 1px solid var(--border-light);
     }
 
     .summary-label {
       font-size: 14px;
-      color: rgba(255, 255, 255, 0.5);
+      color: var(--text-muted);
     }
 
     .summary-value {
       font-size: 16px;
       font-weight: 600;
-      color: #fff;
+      color: var(--text-primary);
     }
 
     .summary-value.gain {
@@ -1446,12 +1468,12 @@
     }
 
     .modal-btn-cancel {
-      background: rgba(255, 255, 255, 0.08);
-      color: #fff;
+      background: var(--input-bg);
+      color: var(--text-primary);
     }
 
     .modal-btn-cancel:hover {
-      background: rgba(255, 255, 255, 0.12);
+      background: var(--bg-card-hover);
     }
 
     .modal-btn-save {
@@ -1511,8 +1533,8 @@
       background: transparent;
     }
 
-    ::-webkit-scrollbar-thumb {
-      background: rgba(255, 255, 255, 0.1);
+        ::-webkit-scrollbar-thumb {
+      background: var(--border-color);
       border-radius: 2px;
     }
 
@@ -1532,6 +1554,12 @@
     
     <!-- Top Bar -->
     <div class="top-bar">
+      <div class="apehub-logo">Ape<span>Hub</span></div>
+      <div class="welcome" onclick="openProfile()">Welcome, <span id="userName">User</span></div>
+    </div>
+
+    <!-- Clock Section -->
+    <div class="clock-section">
       <div class="clock-left">
         <div class="time-row">
           <span class="current-time" id="currentTime">00:00:00</span>
@@ -1544,7 +1572,6 @@
           <span class="countdown-label" id="countdownLabel">until open</span>
         </div>
       </div>
-      <div class="welcome" onclick="openProfile()">Welcome, <span id="userName">User</span></div>
     </div>
 
     <!-- User Profile Panel -->
@@ -2122,6 +2149,190 @@
     let watchlist = JSON.parse(localStorage.getItem('watchlist')) || [];
     let positions = JSON.parse(localStorage.getItem('positions')) || {};
     let currentEditSymbol = null;
+    let priceCache = {};
+    let lastPriceUpdate = 0;
+    const PRICE_CACHE_DURATION = 60000; // 1 minute cache
+    
+    // Mark prices as needing update (set to 0 so API updates them)
+    watchlist.forEach(stock => {
+      stock.needsUpdate = true;
+    });
+
+    // ============================================
+    // FINNHUB API SERVICE
+    // ============================================
+    const FINNHUB_API_KEY = 'd5c3ijpr01qsbmgib7u0d5c3ijpr01qsbmgib7ug';
+    const FINNHUB_BASE_URL = 'https://finnhub.io/api/v1';
+    
+    const StockAPI = {
+      async getQuote(symbol) {
+        try {
+          const url = `${FINNHUB_BASE_URL}/quote?symbol=${symbol}&token=${FINNHUB_API_KEY}`;
+          const response = await fetch(url);
+          if (!response.ok) throw new Error(`HTTP ${response.status}`);
+          const data = await response.json();
+          
+          // Finnhub returns c=0, h=0 for invalid symbols
+          if (data.c === 0 && data.h === 0) return null;
+          
+          return {
+            symbol: symbol,
+            price: data.c,           // Current price
+            change: data.d,          // Change
+            changePercent: data.dp,  // Change percent
+            previousClose: data.pc,  // Previous close
+            high: data.h,
+            low: data.l,
+            open: data.o,
+            trend: data.dp >= 0 ? 'up' : 'down'
+          };
+        } catch (error) {
+          console.error(`Error fetching ${symbol}:`, error);
+          return null;
+        }
+      },
+      
+      async getMultipleQuotes(symbols) {
+        // Finnhub requires individual requests, so we batch with delays
+        const results = [];
+        for (let i = 0; i < symbols.length; i++) {
+          // Add small delay between requests to avoid rate limiting
+          if (i > 0) await new Promise(r => setTimeout(r, 100));
+          try {
+            const quote = await this.getQuote(symbols[i]);
+            if (quote) results.push(quote);
+          } catch (error) {
+            console.error(`Error fetching ${symbols[i]}:`, error);
+          }
+        }
+        return results;
+      },
+      
+      async search(query) {
+        try {
+          const url = `${FINNHUB_BASE_URL}/search?q=${encodeURIComponent(query)}&token=${FINNHUB_API_KEY}`;
+          const response = await fetch(url);
+          const data = await response.json();
+          
+          if (data.result && data.result.length > 0) {
+            return data.result
+              .filter(r => r.type === 'Common Stock' && !r.symbol.includes('.'))
+              .slice(0, 10)
+              .map(r => ({
+                symbol: r.symbol,
+                name: r.description
+              }));
+          }
+          return [];
+        } catch (error) {
+          console.error('Search error:', error);
+          return [];
+        }
+      }
+    };
+
+    // ============================================
+    // UPDATE INDICES WITH REAL DATA
+    // ============================================
+    async function updateIndices() {
+      // Use ETFs instead of index symbols (Finnhub doesn't support ^GSPC etc)
+      const indexSymbols = ['SPY', 'DIA', 'QQQ', 'IWM', 'VTI'];
+      const indexNames = ['S&P 500', 'DOW', 'NASDAQ', 'RUSSELL', 'TOTAL MKT'];
+      
+      try {
+        const quotes = await StockAPI.getMultipleQuotes(indexSymbols);
+        const indicesScroll = document.querySelector('.indices-scroll');
+        
+        if (quotes.length > 0 && indicesScroll) {
+          indicesScroll.innerHTML = quotes.map((q, i) => {
+            const isUp = q.changePercent >= 0;
+            const displayValue = q.price.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+            const changeStr = (isUp ? '+' : '') + q.changePercent.toFixed(2) + '%';
+            
+            return `
+              <div class="index-item">
+                <div class="index-name">${indexNames[i] || q.symbol}</div>
+                <div class="index-value">${displayValue}</div>
+                <div class="index-change ${isUp ? 'up' : 'down'}">${changeStr}</div>
+              </div>
+            `;
+          }).join('');
+        }
+      } catch (error) {
+        console.error('Error updating indices:', error);
+      }
+    }
+
+    // ============================================
+    // UPDATE WATCHLIST WITH REAL PRICES
+    // ============================================
+    async function updateWatchlistPrices(force = false) {
+      if (watchlist.length === 0) return;
+      
+      const now = Date.now();
+      if (!force && now - lastPriceUpdate < PRICE_CACHE_DURATION) return;
+      
+      const symbols = watchlist.map(s => s.symbol);
+      console.log('Fetching prices for:', symbols);
+      
+      try {
+        const quotes = await StockAPI.getMultipleQuotes(symbols);
+        console.log('Received quotes:', quotes);
+        
+        if (quotes.length === 0) {
+          console.warn('No quotes received from API');
+          return;
+        }
+        
+        quotes.forEach(q => {
+          if (q.price > 0) {
+            priceCache[q.symbol] = {
+              price: q.price,
+              changePercent: q.changePercent,
+              trend: q.trend,
+              timestamp: now
+            };
+            
+            // Update watchlist item
+            const idx = watchlist.findIndex(s => s.symbol === q.symbol);
+            if (idx !== -1) {
+              watchlist[idx].price = q.price;
+              watchlist[idx].changePercent = q.changePercent;
+              watchlist[idx].trend = q.trend;
+            }
+          }
+        });
+        
+        lastPriceUpdate = now;
+        localStorage.setItem('watchlist', JSON.stringify(watchlist));
+        renderWatchlist();
+        console.log('Watchlist updated with live prices');
+      } catch (error) {
+        console.error('Error updating watchlist prices:', error);
+      }
+    }
+
+    // ============================================
+    // UPDATE STOCK DATABASE WITH REAL PRICES (for search)
+    // ============================================
+    async function updateSearchResultPrices(symbols) {
+      if (symbols.length === 0) return;
+      
+      try {
+        const quotes = await StockAPI.getMultipleQuotes(symbols);
+        
+        quotes.forEach(q => {
+          const idx = stockDatabase.findIndex(s => s.symbol === q.symbol);
+          if (idx !== -1) {
+            stockDatabase[idx].price = q.price;
+            stockDatabase[idx].changePercent = q.changePercent;
+            stockDatabase[idx].trend = q.trend;
+          }
+        });
+      } catch (error) {
+        console.error('Error updating search prices:', error);
+      }
+    }
 
     // ============================================
     // MODAL FUNCTIONS
@@ -2782,10 +2993,10 @@
       document.getElementById('themeLabel').textContent = newTheme === 'light' ? 'Light mode' : 'Dark mode';
     }
 
-    // Load theme immediately to prevent flash
+    // Load theme immediately to prevent flash - always start dark
     (function() {
-      const savedTheme = localStorage.getItem('apehub_theme') || 'dark';
-      document.documentElement.setAttribute('data-theme', savedTheme);
+      document.documentElement.setAttribute('data-theme', 'dark');
+      localStorage.setItem('apehub_theme', 'dark');
     })();
 
     // ============================================
@@ -2800,6 +3011,16 @@
       loadUserProfile();
       loadChatMessages();
       loadTheme();
+      
+      // Fetch real-time data immediately (force update)
+      updateIndices();
+      updateWatchlistPrices(true); // Force update on page load
+      
+      // Refresh prices every 60 seconds
+      setInterval(() => {
+        updateIndices();
+        updateWatchlistPrices(true);
+      }, 60000);
     });
   </script>
 </body>

@@ -19,8 +19,8 @@
       --text-primary: #fff;
       --text-secondary: rgba(255, 255, 255, 0.6);
       --text-muted: rgba(255, 255, 255, 0.4);
-      --border-color: rgba(255, 255, 255, 0.08);
-      --border-light: rgba(255, 255, 255, 0.06);
+      --border-color: rgba(255, 255, 255, 0.15);
+      --border-light: rgba(255, 255, 255, 0.1);
       --accent: #a855f7;
       --accent-glow: rgba(168, 85, 247, 0.3);
       --nav-bg: rgba(10, 10, 15, 0.95);
@@ -33,11 +33,11 @@
       --bg-secondary: #ffffff;
       --bg-card: rgba(0, 0, 0, 0.04);
       --bg-card-hover: rgba(0, 0, 0, 0.08);
-      --text-primary: #1a1a2e;
-      --text-secondary: #4a4a5a;
-      --text-muted: #6b6b7b;
-      --border-color: rgba(0, 0, 0, 0.12);
-      --border-light: rgba(0, 0, 0, 0.08);
+      --text-primary: #000000;
+      --text-secondary: #333333;
+      --text-muted: #555555;
+      --border-color: rgba(0, 0, 0, 0.15);
+      --border-light: rgba(0, 0, 0, 0.1);
       --accent: #7c3aed;
       --accent-glow: rgba(124, 58, 237, 0.15);
       --nav-bg: rgba(255, 255, 255, 0.95);
@@ -109,7 +109,7 @@
     /* Post Card */
     .post-card {
       padding: 16px 0;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+      border-bottom: 1px solid var(--border-color);
     }
 
     .post-card.new-post {
@@ -278,12 +278,12 @@
 
     .reply-input {
       flex: 1;
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid rgba(255, 255, 255, 0.1);
+      background: var(--input-bg);
+      border: 1px solid var(--border-color);
       border-radius: 20px;
       padding: 10px 16px;
       font-size: 14px;
-      color: #fff;
+      color: var(--text-primary);
       outline: none;
       resize: none;
       font-family: inherit;
@@ -321,7 +321,7 @@
       display: flex;
       gap: 10px;
       padding: 10px 0;
-      border-top: 1px solid rgba(255, 255, 255, 0.04);
+      border-top: 1px solid var(--border-light);
     }
 
     .reply-avatar {
@@ -352,17 +352,17 @@
     .reply-username {
       font-size: 13px;
       font-weight: 600;
-      color: #fff;
+      color: var(--text-primary);
     }
 
     .reply-time {
       font-size: 12px;
-      color: rgba(255, 255, 255, 0.3);
+      color: var(--text-muted);
     }
 
     .reply-text {
       font-size: 14px;
-      color: rgba(255, 255, 255, 0.8);
+      color: var(--text-secondary);
       line-height: 1.4;
     }
 
@@ -432,7 +432,7 @@
       max-width: 400px;
       margin: 0;
       background: var(--card-bg);
-      border: 1px solid rgba(255, 255, 255, 0.15);
+      border: 1px solid var(--border-color);
       border-radius: 20px;
       padding: 0;
       opacity: 0;
@@ -452,13 +452,13 @@
       justify-content: space-between;
       align-items: center;
       padding: 16px 20px;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+      border-bottom: 1px solid var(--border-color);
     }
 
     .compose-cancel {
       background: none;
       border: none;
-      color: rgba(255, 255, 255, 0.5);
+      color: var(--text-muted);
       font-size: 15px;
       cursor: pointer;
       padding: 8px;
@@ -578,7 +578,7 @@
     .empty-state {
       text-align: center;
       padding: 60px 24px;
-      color: rgba(255, 255, 255, 0.4);
+      color: var(--text-muted);
     }
 
     .empty-state svg {
@@ -592,7 +592,7 @@
       font-size: 18px;
       font-weight: 600;
       margin-bottom: 8px;
-      color: rgba(255, 255, 255, 0.6);
+      color: var(--text-secondary);
     }
 
     .empty-state p {
@@ -1172,10 +1172,10 @@
     // Periodically update online count
     setInterval(updateOnlineCount, 30000);
 
-    // Load theme
+    // Load theme - always start dark
     (function() {
-      const savedTheme = localStorage.getItem('apehub_theme') || 'dark';
-      document.documentElement.setAttribute('data-theme', savedTheme);
+      document.documentElement.setAttribute('data-theme', 'dark');
+      localStorage.setItem('apehub_theme', 'dark');
     })();
   </script>
 </body>

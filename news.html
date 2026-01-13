@@ -19,8 +19,8 @@
       --text-primary: #fff;
       --text-secondary: rgba(255, 255, 255, 0.6);
       --text-muted: rgba(255, 255, 255, 0.4);
-      --border-color: rgba(255, 255, 255, 0.08);
-      --border-light: rgba(255, 255, 255, 0.06);
+      --border-color: rgba(255, 255, 255, 0.15);
+      --border-light: rgba(255, 255, 255, 0.1);
       --accent: #a855f7;
       --accent-glow: rgba(168, 85, 247, 0.3);
       --nav-bg: rgba(10, 10, 15, 0.95);
@@ -33,11 +33,11 @@
       --bg-secondary: #ffffff;
       --bg-card: rgba(0, 0, 0, 0.04);
       --bg-card-hover: rgba(0, 0, 0, 0.08);
-      --text-primary: #1a1a2e;
-      --text-secondary: #4a4a5a;
-      --text-muted: #6b6b7b;
-      --border-color: rgba(0, 0, 0, 0.12);
-      --border-light: rgba(0, 0, 0, 0.08);
+      --text-primary: #000000;
+      --text-secondary: #333333;
+      --text-muted: #555555;
+      --border-color: rgba(0, 0, 0, 0.15);
+      --border-light: rgba(0, 0, 0, 0.1);
       --accent: #7c3aed;
       --accent-glow: rgba(124, 58, 237, 0.15);
       --nav-bg: rgba(255, 255, 255, 0.95);
@@ -242,7 +242,7 @@
     .news-stock-symbol {
       font-size: 13px;
       font-weight: 600;
-      color: #fff;
+      color: var(--text-primary);
     }
 
     .news-stock-change {
@@ -278,7 +278,7 @@
     .earnings-title {
       font-size: 18px;
       font-weight: 700;
-      color: #fff;
+      color: var(--text-primary);
     }
 
     .earnings-badge {
@@ -291,7 +291,7 @@
     .earnings-card {
       background: transparent;
       border: none;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+      border-bottom: 1px solid var(--border-light);
       border-radius: 0;
       padding: 16px 0;
       margin-bottom: 0;
@@ -317,12 +317,12 @@
     .earnings-symbol {
       font-size: 17px;
       font-weight: 700;
-      color: #fff;
+      color: var(--text-primary);
     }
 
     .earnings-name {
       font-size: 13px;
-      color: rgba(255, 255, 255, 0.4);
+      color: var(--text-muted);
     }
 
     .earnings-result {
@@ -355,7 +355,7 @@
 
     .earnings-date {
       font-size: 12px;
-      color: rgba(255, 255, 255, 0.3);
+      color: var(--text-muted);
     }
 
     .earnings-data {
@@ -377,7 +377,7 @@
 
     .earnings-metric-label {
       font-size: 10px;
-      color: rgba(255, 255, 255, 0.35);
+      color: var(--text-muted);
       text-transform: uppercase;
       letter-spacing: 0.3px;
     }
@@ -385,7 +385,7 @@
     .earnings-metric-value {
       font-size: 15px;
       font-weight: 600;
-      color: rgba(255, 255, 255, 0.8);
+      color: var(--text-secondary);
     }
 
     .earnings-metric-value.up {
@@ -407,7 +407,7 @@
 
     .earnings-stock-label {
       font-size: 12px;
-      color: rgba(255, 255, 255, 0.4);
+      color: var(--text-muted);
     }
 
     .earnings-stock-change {
@@ -443,7 +443,7 @@
     .crypto-title {
       font-size: 18px;
       font-weight: 700;
-      color: #fff;
+      color: var(--text-primary);
     }
 
     .crypto-badge {
@@ -483,13 +483,13 @@
     .crypto-ticker {
       font-size: 13px;
       font-weight: 700;
-      color: #fff;
+      color: var(--text-primary);
     }
 
     .crypto-value {
       font-size: 13px;
       font-weight: 600;
-      color: rgba(255, 255, 255, 0.7);
+      color: var(--text-secondary);
     }
 
     .crypto-pct {
@@ -507,7 +507,7 @@
 
     .crypto-article {
       padding: 16px 0;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+      border-bottom: 1px solid var(--border-light);
     }
 
     .crypto-article:last-child {
@@ -516,21 +516,21 @@
 
     .crypto-article-time {
       font-size: 11px;
-      color: rgba(255, 255, 255, 0.35);
+      color: var(--text-muted);
       margin-bottom: 8px;
     }
 
     .crypto-article-title {
       font-size: 15px;
       font-weight: 600;
-      color: #fff;
+      color: var(--text-primary);
       line-height: 1.4;
       margin-bottom: 8px;
     }
 
     .crypto-article-summary {
       font-size: 13px;
-      color: rgba(255, 255, 255, 0.5);
+      color: var(--text-muted);
       line-height: 1.5;
       margin-bottom: 12px;
     }
@@ -568,8 +568,8 @@
     }
 
     .crypto-sentiment.neutral {
-      background: rgba(255, 255, 255, 0.08);
-      color: rgba(255, 255, 255, 0.5);
+      background: var(--input-bg);
+      color: var(--text-muted);
     }
 
     /* Breaking News Section */
@@ -592,7 +592,7 @@
     .breaking-title {
       font-size: 18px;
       font-weight: 700;
-      color: #fff;
+      color: var(--text-primary);
     }
 
     .breaking-live {
@@ -639,13 +639,13 @@
     .breaking-alert-text {
       font-size: 14px;
       font-weight: 600;
-      color: #fff;
+      color: var(--text-primary);
       line-height: 1.4;
     }
 
     .breaking-article {
       padding: 16px 0;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+      border-bottom: 1px solid var(--border-light);
     }
 
     .breaking-article:last-child {
@@ -661,7 +661,7 @@
 
     .breaking-article-time {
       font-size: 11px;
-      color: rgba(255, 255, 255, 0.35);
+      color: var(--text-muted);
     }
 
     .breaking-urgent {
@@ -678,14 +678,14 @@
     .breaking-article-title {
       font-size: 15px;
       font-weight: 600;
-      color: #fff;
+      color: var(--text-primary);
       line-height: 1.4;
       margin-bottom: 8px;
     }
 
     .breaking-article-summary {
       font-size: 13px;
-      color: rgba(255, 255, 255, 0.5);
+      color: var(--text-muted);
       line-height: 1.5;
       margin-bottom: 12px;
     }
@@ -705,7 +705,7 @@
     .breaking-stock-symbol {
       font-size: 12px;
       font-weight: 700;
-      color: #fff;
+      color: var(--text-primary);
     }
 
     .breaking-stock-change {
@@ -741,7 +741,7 @@
     .fed-title {
       font-size: 18px;
       font-weight: 700;
-      color: #fff;
+      color: var(--text-primary);
     }
 
     .fed-badge {
@@ -767,7 +767,7 @@
 
     .fed-rate-label {
       font-size: 10px;
-      color: rgba(255, 255, 255, 0.4);
+      color: var(--text-muted);
       text-transform: uppercase;
       letter-spacing: 0.5px;
       margin-bottom: 6px;
@@ -793,12 +793,12 @@
     }
 
     .fed-rate-change.neutral {
-      color: rgba(255, 255, 255, 0.4);
+      color: var(--text-muted);
     }
 
     .fed-article {
       padding: 16px 0;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+      border-bottom: 1px solid var(--border-light);
     }
 
     .fed-article:last-child {
@@ -814,7 +814,7 @@
 
     .fed-article-time {
       font-size: 11px;
-      color: rgba(255, 255, 255, 0.35);
+      color: var(--text-muted);
     }
 
     .fed-source {
@@ -829,14 +829,14 @@
     .fed-article-title {
       font-size: 15px;
       font-weight: 600;
-      color: #fff;
+      color: var(--text-primary);
       line-height: 1.4;
       margin-bottom: 8px;
     }
 
     .fed-article-summary {
       font-size: 13px;
-      color: rgba(255, 255, 255, 0.5);
+      color: var(--text-muted);
       line-height: 1.5;
       margin-bottom: 12px;
     }
@@ -849,7 +849,7 @@
 
     .fed-impact-label {
       font-size: 11px;
-      color: rgba(255, 255, 255, 0.4);
+      color: var(--text-muted);
     }
 
     .fed-impact-badge {
@@ -870,8 +870,8 @@
     }
 
     .fed-impact-badge.neutral {
-      background: rgba(255, 255, 255, 0.08);
-      color: rgba(255, 255, 255, 0.5);
+      background: var(--input-bg);
+      color: var(--text-muted);
     }
 
     /* Tech Section */
@@ -894,7 +894,7 @@
     .tech-title {
       font-size: 18px;
       font-weight: 700;
-      color: #fff;
+      color: var(--text-primary);
     }
 
     .tech-badge {
@@ -928,7 +928,7 @@
     .tech-mover-symbol {
       font-size: 14px;
       font-weight: 700;
-      color: #fff;
+      color: var(--text-primary);
       margin-bottom: 4px;
     }
 
@@ -947,7 +947,7 @@
 
     .tech-article {
       padding: 16px 0;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+      border-bottom: 1px solid var(--border-light);
     }
 
     .tech-article:last-child {
@@ -963,7 +963,7 @@
 
     .tech-article-time {
       font-size: 11px;
-      color: rgba(255, 255, 255, 0.35);
+      color: var(--text-muted);
     }
 
     .tech-category {
@@ -978,14 +978,14 @@
     .tech-article-title {
       font-size: 15px;
       font-weight: 600;
-      color: #fff;
+      color: var(--text-primary);
       line-height: 1.4;
       margin-bottom: 8px;
     }
 
     .tech-article-summary {
       font-size: 13px;
-      color: rgba(255, 255, 255, 0.5);
+      color: var(--text-muted);
       line-height: 1.5;
       margin-bottom: 12px;
     }
@@ -1005,7 +1005,7 @@
     .tech-stock-symbol {
       font-size: 12px;
       font-weight: 700;
-      color: #fff;
+      color: var(--text-primary);
     }
 
     .tech-stock-change {
@@ -1122,7 +1122,7 @@
     .ai-insight-text {
       font-size: 14px;
       line-height: 1.5;
-      color: rgba(255, 255, 255, 0.7);
+      color: var(--text-secondary);
     }
   </style>
 </head>
@@ -2348,10 +2348,10 @@
     updateTime();
     setInterval(updateTime, 60000);
 
-    // Load theme
+    // Load theme - always start dark
     (function() {
-      const savedTheme = localStorage.getItem('apehub_theme') || 'dark';
-      document.documentElement.setAttribute('data-theme', savedTheme);
+      document.documentElement.setAttribute('data-theme', 'dark');
+      localStorage.setItem('apehub_theme', 'dark');
     })();
   </script>
 </body>

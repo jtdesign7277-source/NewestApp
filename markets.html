@@ -19,8 +19,8 @@
       --text-primary: #fff;
       --text-secondary: rgba(255, 255, 255, 0.6);
       --text-muted: rgba(255, 255, 255, 0.4);
-      --border-color: rgba(255, 255, 255, 0.08);
-      --border-light: rgba(255, 255, 255, 0.06);
+      --border-color: rgba(255, 255, 255, 0.15);
+      --border-light: rgba(255, 255, 255, 0.1);
       --accent: #a855f7;
       --accent-glow: rgba(168, 85, 247, 0.3);
       --nav-bg: rgba(10, 10, 15, 0.95);
@@ -33,11 +33,11 @@
       --bg-secondary: #ffffff;
       --bg-card: rgba(0, 0, 0, 0.04);
       --bg-card-hover: rgba(0, 0, 0, 0.08);
-      --text-primary: #1a1a2e;
-      --text-secondary: #4a4a5a;
-      --text-muted: #6b6b7b;
-      --border-color: rgba(0, 0, 0, 0.12);
-      --border-light: rgba(0, 0, 0, 0.08);
+      --text-primary: #000000;
+      --text-secondary: #333333;
+      --text-muted: #555555;
+      --border-color: rgba(0, 0, 0, 0.15);
+      --border-light: rgba(0, 0, 0, 0.1);
       --accent: #7c3aed;
       --accent-glow: rgba(124, 58, 237, 0.15);
       --nav-bg: rgba(255, 255, 255, 0.95);
@@ -336,8 +336,8 @@
     .scroll-card {
       flex-shrink: 0;
       width: 140px;
-      background: rgba(255, 255, 255, 0.03);
-      border: 1px solid rgba(255, 255, 255, 0.06);
+      background: var(--bg-card);
+      border: 1px solid var(--border-light);
       border-radius: 14px;
       padding: 14px;
     }
@@ -345,13 +345,13 @@
     .scroll-card-symbol {
       font-size: 14px;
       font-weight: 700;
-      color: #fff;
+      color: var(--text-primary);
       margin-bottom: 4px;
     }
 
     .scroll-card-name {
       font-size: 11px;
-      color: rgba(255, 255, 255, 0.4);
+      color: var(--text-muted);
       margin-bottom: 10px;
       white-space: nowrap;
       overflow: hidden;
@@ -361,7 +361,7 @@
     .scroll-card-price {
       font-size: 16px;
       font-weight: 600;
-      color: #fff;
+      color: var(--text-primary);
       margin-bottom: 4px;
     }
 
@@ -383,10 +383,10 @@
       display: flex;
       gap: 6px;
       margin: 0 24px 16px;
-      background: rgba(255, 255, 255, 0.05);
+      background: var(--input-bg);
       backdrop-filter: blur(12px);
       -webkit-backdrop-filter: blur(12px);
-      border: 1px solid rgba(255, 255, 255, 0.08);
+      border: 1px solid var(--border-color);
       border-radius: 12px;
       padding: 4px;
     }
@@ -394,12 +394,12 @@
     .toggle-btn {
       flex: 1;
       padding: 10px 16px;
-      background: rgba(10, 10, 15, 0.8);
+      background: var(--bg-card);
       border: 2px solid transparent;
       border-radius: 8px;
       font-size: 13px;
       font-weight: 600;
-      color: rgba(255, 255, 255, 0.5);
+      color: var(--text-muted);
       cursor: pointer;
       transition: all 0.2s;
     }
@@ -421,7 +421,7 @@
     /* Volume Badge */
     .volume-badge {
       font-size: 11px;
-      color: rgba(255, 255, 255, 0.4);
+      color: var(--text-muted);
       margin-top: 2px;
     }
 
@@ -1049,6 +1049,207 @@
     const options = { month: 'short', day: 'numeric', year: 'numeric' };
     document.getElementById('current-date').textContent = now.toLocaleDateString('en-US', options);
 
+    // ============================================
+    // FINNHUB API SERVICE
+    // ============================================
+    const FINNHUB_API_KEY = 'd5c3ijpr01qsbmgib7u0d5c3ijpr01qsbmgib7ug';
+    const FINNHUB_BASE_URL = 'https://finnhub.io/api/v1';
+    
+    const StockAPI = {
+      async getQuote(symbol) {
+        try {
+          const url = `${FINNHUB_BASE_URL}/quote?symbol=${symbol}&token=${FINNHUB_API_KEY}`;
+          const response = await fetch(url);
+          if (!response.ok) throw new Error(`HTTP ${response.status}`);
+          const data = await response.json();
+          
+          if (data.c === 0 && data.h === 0) return null;
+          
+          return {
+            symbol: symbol,
+            name: symbol,
+            price: data.c,
+            change: data.d,
+            changePercent: data.dp,
+            previousClose: data.pc,
+            trend: data.dp >= 0 ? 'up' : 'down'
+          };
+        } catch (error) {
+          console.error(`Error fetching ${symbol}:`, error);
+          return null;
+        }
+      },
+      
+      async getMultipleQuotes(symbols) {
+        const results = [];
+        for (let i = 0; i < symbols.length; i++) {
+          if (i > 0) await new Promise(r => setTimeout(r, 100));
+          try {
+            const quote = await this.getQuote(symbols[i]);
+            if (quote) results.push(quote);
+          } catch (error) {
+            console.error(`Error fetching ${symbols[i]}:`, error);
+          }
+        }
+        return results;
+      }
+    };
+
+    // ============================================
+    // UPDATE MARKET DATA WITH REAL PRICES
+    // ============================================
+    async function updateRealTimeMarketData(region) {
+      const marketOverview = document.getElementById('market-overview');
+      
+      // Use ETFs instead of index symbols for Finnhub compatibility
+      const regionSymbols = {
+        us: ['SPY', 'QQQ', 'DIA', 'IWM'],
+        europe: ['EWG', 'EWU', 'EWQ', 'VGK'],
+        asia: ['EWJ', 'EWH', 'FXI', 'EWY']
+      };
+      
+      const regionNames = {
+        us: ['S&P 500', 'NASDAQ', 'DOW JONES', 'RUSSELL 2000'],
+        europe: ['GERMANY', 'UK', 'FRANCE', 'EUROPE'],
+        asia: ['JAPAN', 'HONG KONG', 'CHINA', 'KOREA']
+      };
+      
+      const symbols = regionSymbols[region] || regionSymbols.us;
+      const names = regionNames[region] || regionNames.us;
+      
+      try {
+        const quotes = await StockAPI.getMultipleQuotes(symbols);
+        
+        if (quotes.length > 0) {
+          marketOverview.innerHTML = quotes.map((q, i) => {
+            const isUp = q.changePercent >= 0;
+            const displayValue = q.price.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+            const changeStr = `${isUp ? '+' : ''}${q.changePercent.toFixed(2)}% (${isUp ? '+' : ''}${q.change.toFixed(2)})`;
+            
+            return `
+              <div class="market-card">
+                <div class="market-card-header">
+                  <span class="market-name">${names[i] || q.name}</span>
+                  <div class="market-status"></div>
+                </div>
+                <div class="market-value">${displayValue}</div>
+                <div class="market-change ${isUp ? 'up' : 'down'}">${changeStr}</div>
+              </div>
+            `;
+          }).join('');
+        }
+      } catch (error) {
+        console.error('Error updating market data:', error);
+      }
+    }
+
+    async function updateGainersLosers() {
+      // Top gainers/losers - use popular volatile stocks
+      const gainerSymbols = ['NVDA', 'TSLA', 'AMD', 'PLTR', 'MSTR'];
+      const loserSymbols = ['INTC', 'BA', 'NKE', 'DIS', 'PYPL'];
+      
+      const [gainers, losers] = await Promise.all([
+        StockAPI.getMultipleQuotes(gainerSymbols),
+        StockAPI.getMultipleQuotes(loserSymbols)
+      ]);
+      
+      const gainersList = document.getElementById('gainers-list');
+      const losersList = document.getElementById('losers-list');
+      
+      // Sort gainers by change percent descending
+      gainers.sort((a, b) => b.changePercent - a.changePercent);
+      
+      if (gainers.length > 0) {
+        gainersList.innerHTML = gainers.slice(0, 5).map((stock, i) => {
+          const isUp = stock.changePercent >= 0;
+          return `
+            <div class="stock-row">
+              <div class="stock-rank">${i + 1}</div>
+              <div class="stock-info">
+                <span class="stock-symbol">${stock.symbol}</span>
+                <span class="stock-name">${stock.name}</span>
+              </div>
+              <div class="stock-price">$${stock.price.toFixed(2)}</div>
+              <div class="stock-change-col">
+                <span class="stock-change ${isUp ? 'up' : 'down'}">${isUp ? '+' : ''}${stock.changePercent.toFixed(2)}%</span>
+              </div>
+            </div>
+          `;
+        }).join('');
+      }
+      
+      // Sort losers by change percent ascending
+      losers.sort((a, b) => a.changePercent - b.changePercent);
+      
+      if (losers.length > 0) {
+        losersList.innerHTML = losers.slice(0, 5).map((stock, i) => {
+          return `
+            <div class="stock-row">
+              <div class="stock-rank">${i + 1}</div>
+              <div class="stock-info">
+                <span class="stock-symbol">${stock.symbol}</span>
+                <span class="stock-name">${stock.name}</span>
+              </div>
+              <div class="stock-price">$${stock.price.toFixed(2)}</div>
+              <div class="stock-change-col">
+                <span class="stock-change down">${stock.changePercent.toFixed(2)}%</span>
+              </div>
+            </div>
+          `;
+        }).join('');
+      }
+    }
+
+    async function updateMostActive() {
+      const symbols = ['NVDA', 'TSLA', 'AAPL', 'AMD', 'PLTR'];
+      const quotes = await StockAPI.getMultipleQuotes(symbols);
+      
+      const activeList = document.querySelector('.stock-section:first-of-type .stock-list');
+      if (activeList && quotes.length > 0) {
+        activeList.innerHTML = quotes.map((stock, i) => {
+          const isUp = stock.changePercent >= 0;
+          return `
+            <div class="stock-row">
+              <div class="stock-rank">${i + 1}</div>
+              <div class="stock-info">
+                <span class="stock-symbol">${stock.symbol}</span>
+                <span class="stock-name">${stock.name}</span>
+              </div>
+              <div class="stock-price">$${stock.price.toFixed(2)}</div>
+              <div class="stock-change-col">
+                <span class="stock-change ${isUp ? 'up' : 'down'}">${isUp ? '+' : ''}${stock.changePercent.toFixed(2)}%</span>
+              </div>
+            </div>
+          `;
+        }).join('');
+      }
+    }
+
+    async function updateTrendingSection() {
+      const symbols = ['RGTI', 'IONQ', 'SMCI', 'COIN', 'MSTR'];
+      const quotes = await StockAPI.getMultipleQuotes(symbols);
+      
+      const trendingList = document.querySelectorAll('.stock-section')[1]?.querySelector('.stock-list');
+      if (trendingList && quotes.length > 0) {
+        trendingList.innerHTML = quotes.map((stock, i) => {
+          const isUp = stock.changePercent >= 0;
+          return `
+            <div class="stock-row">
+              <div class="stock-rank">${i + 1}</div>
+              <div class="stock-info">
+                <span class="stock-symbol">${stock.symbol}</span>
+                <span class="stock-name">${stock.name}</span>
+              </div>
+              <div class="stock-price">$${stock.price.toFixed(2)}</div>
+              <div class="stock-change-col">
+                <span class="stock-change ${isUp ? 'up' : 'down'}">${isUp ? '+' : ''}${stock.changePercent.toFixed(2)}%</span>
+              </div>
+            </div>
+          `;
+        }).join('');
+      }
+    }
+
     // Region tab switching
     document.querySelectorAll('.region-tab').forEach(tab => {
       tab.addEventListener('click', function() {
@@ -1056,7 +1257,7 @@
         this.classList.add('active');
         
         const region = this.dataset.region;
-        updateMarketData(region);
+        updateRealTimeMarketData(region);
       });
     });
 
@@ -1082,48 +1283,25 @@
       losersList.style.display = 'block';
     });
 
-    // Update market data based on region
-    function updateMarketData(region) {
-      const marketOverview = document.getElementById('market-overview');
+    // Initialize with real data
+    document.addEventListener('DOMContentLoaded', function() {
+      updateRealTimeMarketData('us');
+      updateMostActive();
+      updateTrendingSection();
+      updateGainersLosers();
       
-      const marketData = {
-        us: [
-          { name: 'S&P 500', value: '6,082.45', change: '+1.24% (+74.68)', up: true },
-          { name: 'NASDAQ', value: '19,845.32', change: '+1.67% (+325.42)', up: true },
-          { name: 'DOW JONES', value: '44,287.14', change: '+0.89% (+389.56)', up: true },
-          { name: 'RUSSELL 2000', value: '2,345.67', change: '-0.34% (-8.02)', up: false }
-        ],
-        europe: [
-          { name: 'FTSE 100', value: '8,456.32', change: '+0.67% (+56.23)', up: true },
-          { name: 'DAX', value: '21,234.56', change: '+0.89% (+187.45)', up: true },
-          { name: 'CAC 40', value: '7,892.14', change: '+0.45% (+35.12)', up: true },
-          { name: 'STOXX 600', value: '534.67', change: '-0.23% (-1.23)', up: false }
-        ],
-        asia: [
-          { name: 'NIKKEI 225', value: '39,456.78', change: '+1.23% (+478.23)', up: true },
-          { name: 'HANG SENG', value: '20,123.45', change: '-0.87% (-176.45)', up: false },
-          { name: 'SHANGHAI', value: '3,234.56', change: '+0.34% (+10.98)', up: true },
-          { name: 'KOSPI', value: '2,567.89', change: '+0.56% (+14.32)', up: true }
-        ]
-      };
-
-      const data = marketData[region];
-      marketOverview.innerHTML = data.map(market => `
-        <div class="market-card">
-          <div class="market-card-header">
-            <span class="market-name">${market.name}</span>
-            <div class="market-status${region !== 'us' && region !== 'europe' ? ' closed' : ''}"></div>
-          </div>
-          <div class="market-value">${market.value}</div>
-          <div class="market-change ${market.up ? 'up' : 'down'}">${market.change}</div>
-        </div>
-      `).join('');
-    }
-
-    // Load theme
+      // Refresh every 60 seconds
+      setInterval(() => {
+        const activeRegion = document.querySelector('.region-tab.active')?.dataset.region || 'us';
+        updateRealTimeMarketData(activeRegion);
+        updateMostActive();
+        updateTrendingSection();
+        updateGainersLosers();
+      }, 60000);
+    });
     (function() {
-      const savedTheme = localStorage.getItem('apehub_theme') || 'dark';
-      document.documentElement.setAttribute('data-theme', savedTheme);
+      document.documentElement.setAttribute('data-theme', 'dark');
+      localStorage.setItem('apehub_theme', 'dark');
     })();
   </script>
 </body>
