@@ -240,14 +240,10 @@ app.get('/api/subscription-status/:customerId', async (req, res) => {
 // Serve static files (after all API routes!)
 app.use(express.static(__dirname));
 
-// Serve the landing page
-app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'LandingPurple _ DailyEdgeFinance.html'));
-});
-// Serve ONLY specific allowed files
+// Serve the dashboard as the main project
 app.get('/', (req, res) => {
   res.set('Cache-Control', 'no-store, no-cache, must-revalidate');
-  res.sendFile(path.join(__dirname, 'LandingPurple _ DailyEdgeFinance.html'));
+  res.sendFile(path.join(__dirname, 'dashboard.html'));
 });
 
 app.get('/dashboard.html', (req, res) => {
@@ -275,8 +271,13 @@ app.get('/news.html', (req, res) => {
   res.sendFile(path.join(__dirname, 'news.html'));
 });
 
+app.get('/login', (req, res) => {
+  res.set('Cache-Control', 'no-store, no-cache, must-revalidate');
+  res.sendFile(path.join(__dirname, 'LandingPurple _ DailyEdgeFinance.html'));
+});
+
 // Serve assets directory
-app.use('/LandingPurple _ DailyEdgeFinance_files', express.static(path.join(__dirname, 'LandingPurple _ DailyEdgeFinance_files')));
+app.use('/LandingPurpleFiles', express.static(path.join(__dirname, 'LandingPurpleFiles')));
 app.use('/intro-music.mp3', express.static(path.join(__dirname, 'intro-music.mp3')));
 
 // Block EVERYTHING ELSE
